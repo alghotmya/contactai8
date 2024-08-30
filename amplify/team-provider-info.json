@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "contactai890aeccd1": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2tf8n90uf18rf",
+          "type": "cicd"
+        }
       }
     }
   }
