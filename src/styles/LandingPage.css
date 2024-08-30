@@ -1,9 +1,9 @@
 /* Location: src/styles/LandingPage.css */
 
 body {
-  background-color: #0d0d0d; /* Dark background */
-  color: #f0f0f0; /* Light grey text */
-  font-family: 'Roboto', sans-serif; /* Use a clean, modern font */
+  background-color: #0d0d0d;
+  color: #f0f0f0;
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -13,12 +13,12 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #111; /* Darker header background */
+  background-color: #111;
 }
 
 header .logo {
   font-size: 1.5rem;
-  color: #f0f0f0; /* Light grey logo text */
+  color: #f0f0f0;
   cursor: pointer;
 }
 
@@ -35,29 +35,29 @@ header nav ul li {
 }
 
 header nav ul li a {
-  color: #f0f0f0; /* Light grey nav links */
+  color: #f0f0f0;
   text-decoration: none;
   font-size: 1rem;
 }
 
 header nav ul li a:hover {
-  color: #ff9800; /* Dark orange on hover */
+  color: #ff9800;
 }
 
 .intro {
   text-align: center;
   padding: 100px 20px;
-  background-color: #1a1a1a; /* Dark grey background */
+  background-color: #1a1a1a;
 }
 
 .intro h1 {
   font-size: 2.5rem;
-  color: #ffffff; /* White text for the main heading */
+  color: #ffffff;
 }
 
 .intro p {
   font-size: 1.2rem;
-  color: #cccccc; /* Light grey for the description */
+  color: #cccccc;
   margin: 20px 0;
 }
 
@@ -65,18 +65,22 @@ header nav ul li a:hover {
   margin-top: 30px;
 }
 
-.intro .buttons button {
-  background-color: #ff9800; /* Dark orange button background */
-  color: #0d0d0d; /* Dark text on button */
+.intro .auth-button {
+  background-color: #ff9800;
+  color: #fff;
   border: none;
   padding: 15px 30px;
   font-size: 1rem;
   cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
   margin: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
-.intro .buttons button:hover {
-  background-color: #e68900; /* Slightly darker orange on hover */
+.intro .auth-button:hover {
+  background-color: #e68900;
 }
 
 .about, .demo-request, .resources, .testing-agent, .statistics {
@@ -86,16 +90,16 @@ header nav ul li a:hover {
 
 .about h2, .demo-request h2, .resources h2, .testing-agent h2, .statistics h2 {
   font-size: 2rem;
-  color: #ff9800; /* Dark orange for section headings */
+  color: #ff9800;
 }
 
 .about p, .demo-request p, .resources p, .testing-agent p, .statistics p {
-  color: #cccccc; /* Light grey for section content */
+  color: #cccccc;
   font-size: 1.1rem;
 }
 
 footer {
-  background-color: #111; /* Darker footer background */
+  background-color: #111;
   color: #f0f0f0;
   text-align: center;
   padding: 20px;
@@ -103,48 +107,4 @@ footer {
 
 footer p {
   margin: 0;
-}
-
-.sidebar-menu {
-  background-color: #1a1a1a; /* Dark grey sidebar */
-  color: #f0f0f0;
-  padding: 20px;
-}
-
-.sidebar-menu ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar-menu ul li {
-  padding: 15px 0;
-}
-
-.sidebar-menu ul li a {
-  color: #f0f0f0;
-  text-decoration: none;
-  font-size: 1.2rem;
-}
-
-.sidebar-menu ul li a:hover {
-  color: #ff9800; /* Dark orange on hover */
-}
-
-.dashboard-content header {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  background-color: #1a1a1a; /* Dark grey background */
-}
-
-.dashboard-content header .workspace-dropdown select {
-  background-color: #111;
-  color: #f0f0f0;
-  border: none;
-  padding: 10px;
-}
-
-.dashboard-content header .user-profile span {
-  font-size: 1.2rem;
-  color: #f0f0f0;
 }

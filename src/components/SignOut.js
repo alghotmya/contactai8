@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/SignOut.css'; // Corrected import path
+import '../styles/SignOut.css'; // Correct path
 
 const SignOut = () => {
   const navigate = useNavigate();

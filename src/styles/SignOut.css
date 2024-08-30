@@ -28,7 +28,7 @@
   }
   
   .signout-buttons button {
-    background-color: #ff9800; /* Dark orange */
+    background-color: #ff9800;
     color: #fff;
     border: none;
     padding: 15px 30px;
@@ -39,6 +39,6 @@
   }
   
   .signout-buttons button:hover {
-    background-color: #e68900; /* Slightly darker orange on hover */
+    background-color: #e68900;
   }
   
