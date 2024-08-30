@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-contactai8-dev-0ab3e-authRole",
+      "UnauthRoleArn": "arn:aws:iam::609653479959:role/amplify-contactai8-dev-0ab3e-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::609653479959:role/amplify-contactai8-dev-0ab3e-authRole",
+      "Region": "ca-central-1",
+      "DeploymentBucketName": "amplify-contactai8-dev-0ab3e-deployment",
+      "UnauthRoleName": "amplify-contactai8-dev-0ab3e-unauthRole",
+      "StackName": "amplify-contactai8-dev-0ab3e",
+      "StackId": "arn:aws:cloudformation:ca-central-1:609653479959:stack/amplify-contactai8-dev-0ab3e/806bfc40-6706-11ef-bb02-06da90d7382d",
+      "AmplifyAppId": "d2tf8n90uf18rf"
+    },
+    "categories": {
+      "auth": {
+        "contactai890aeccd1": {}
+      }
+    }
+  }
+}
