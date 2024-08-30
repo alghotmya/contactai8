@@ -1,23 +1,16 @@
-import logo from './logo.svg';
+// Location: src/App.js
+
+import React from 'react';
+// Import the CSS for the overall App styling
 import './App.css';
+// Import the LandingPage component from the components directory
+import LandingPage from './components/LandingPage';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* Rendering the LandingPage component as the main content */}
+      <LandingPage />
     </div>
   );
 }
