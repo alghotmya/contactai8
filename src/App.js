@@ -1,17 +1,18 @@
 // Location: src/App.js
 
 import React from 'react';
-// Import the CSS for the overall App styling
-import './App.css';
-// Import the LandingPage component from the components directory
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
+import Dashboard from './components/Dashboard'; // Import the Dashboard component
 
 function App() {
   return (
-    <div className="App">
-      {/* Rendering the LandingPage component as the main content */}
-      <LandingPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
   );
 }
 
