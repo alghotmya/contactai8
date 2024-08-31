@@ -1,0 +1,57 @@
+/* Location: src/styles/Header.css */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #111;
+  }
+  
+  header .logo {
+    font-size: 1.5rem;
+    color: #f0f0f0;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  
+  header nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+  }
+  
+  header nav ul li {
+    display: inline;
+  }
+  
+  header nav ul li a {
+    color: #f0f0f0;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  header nav ul li a:hover {
+    color: #ff9800;
+    background-color: #222;
+  }
+  
+  .auth-link {
+    color: #ffffff;
+    padding: 8px 16px;
+    background-color: #ff9800;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  
+  .auth-link:hover {
+    background-color: #e68900;
+  }
+  
