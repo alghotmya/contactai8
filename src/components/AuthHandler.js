@@ -12,16 +12,17 @@ const AuthHandler = () => {
 
             if (code) {
                 try {
-                    const response = await axios.post('https://your-cognito-domain/oauth2/token', {
+                    const response = await axios.post('https://contactai.auth.ca-central-1.amazoncognito.com/oauth2/token', {
                         grant_type: 'authorization_code',
-                        client_id: 'your-client-id',
-                        redirect_uri: 'https://your-redirect-uri',
-                        code: code,
+                        client_id: '6p6r9ps49qu1ehoom8apsm9jcm',
+                        redirect_uri: 'https://main.d2tf8n90uf18rf.amplifyapp.com/dashboard/',
+                        code: code,  // This should be the authorization code you received
                     }, {
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
                     });
+                    
 
                     const { id_token } = response.data;
 
