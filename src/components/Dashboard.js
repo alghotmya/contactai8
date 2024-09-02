@@ -23,7 +23,7 @@ function Dashboard() {
           }
         });
 
-        const workspaceItems = response.data || []; // Handle response to ensure workspaces are properly extracted
+        const workspaceItems = response.data.Items || []; // Ensure we handle the DynamoDB structure
         setWorkspaces(workspaceItems);
         setCurrentWorkspace(workspaceItems[0]?.WorkspaceName || ''); // Set the first workspace as default, or empty if none exist
       } catch (error) {
@@ -49,7 +49,9 @@ function Dashboard() {
         const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/workspaces', 
         { 
           workspaceName: newWorkspaceName, 
-          workspaceDescription: newWorkspaceDescription 
+          workspaceDescription: newWorkspaceDescription,
+          ownerUserID: 'YOUR_USER_ID', // Update this with the actual user ID
+          resourceLimits: { cpu: '2', memory: '4GB' } // Example values, update according to your requirements
         }, 
         {
           headers: {
@@ -58,11 +60,13 @@ function Dashboard() {
         });
         
         setWorkspaces([...workspaces, response.data]); // Update the workspace list
-        setCurrentWorkspace(response.data.WorkspaceName); // Set the new workspace as the current one
+        setCurrentWorkspace(response.data.workspaceName); // Set the new workspace as the current one
         setShowCreateWorkspaceModal(false); // Close the modal
       } catch (error) {
         console.error('Error adding workspace:', error);
       }
+    } else {
+      alert('Please fill in all required fields.');
     }
   };
 
@@ -129,7 +133,7 @@ function Dashboard() {
                   <a href="/account-details">Account Details</a>
                   <a href="/reset-password">Reset Password</a>
                   <a href="/billing">Billing</a>
-                  <a onClick={handleSignOut}>Sign Out</a>
+                  <a href="#" onClick={handleSignOut}>Sign Out</a> {/* Changed from button to a link */}
                 </div>
               )}
             </div>
@@ -143,6 +147,8 @@ function Dashboard() {
             <h3>Active Agents</h3>
             {/* Display agent summary */}
           </div>
+
+          {responseMessage && <p>API Response: {responseMessage}</p>}
         </main>
 
         {/* Modal for Creating Workspace */}
