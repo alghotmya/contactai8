@@ -54,12 +54,16 @@ function Dashboard() {
 
   const handleAddWorkspace = async () => {
     const token = localStorage.getItem('id_token');
-    const newWorkspace = prompt("Enter the name of the new workspace:");
+    const newWorkspaceName = prompt("Enter the name of the new workspace:");
+    const newWorkspaceDescription = prompt("Enter a description for the new workspace:");
     
-    if (newWorkspace) {
+    if (newWorkspaceName && newWorkspaceDescription) {
       try {
         const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/workspaces', 
-        { name: newWorkspace }, 
+        { 
+          name: newWorkspaceName, 
+          description: newWorkspaceDescription 
+        }, 
         {
           headers: {
             Authorization: `Bearer ${token}`
