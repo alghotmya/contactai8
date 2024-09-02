@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Dashboard.css'; 
 
 function Dashboard() {
@@ -7,6 +8,7 @@ function Dashboard() {
   const [currentWorkspace, setCurrentWorkspace] = useState('');
   const [profileOptions, setProfileOptions] = useState(false);
   const [responseMessage, setResponseMessage] = useState('');
+  const navigate = useNavigate(); // For navigation
 
   useEffect(() => {
     // Fetch workspaces from backend
@@ -19,7 +21,7 @@ function Dashboard() {
           }
         });
         setWorkspaces(response.data);
-        setCurrentWorkspace(response.data[0].name); // Set the first workspace as default
+        setCurrentWorkspace(response.data[0]?.name || ''); // Set the first workspace as default, or empty if none exist
       } catch (error) {
         console.error('Error fetching workspaces:', error);
       }
@@ -50,6 +52,33 @@ function Dashboard() {
     }
   };
 
+  const handleAddWorkspace = async () => {
+    const token = localStorage.getItem('id_token');
+    const newWorkspace = prompt("Enter the name of the new workspace:");
+    
+    if (newWorkspace) {
+      try {
+        const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/workspaces', 
+        { name: newWorkspace }, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        setWorkspaces([...workspaces, response.data]); // Update the workspace list
+        setCurrentWorkspace(response.data.name); // Set the new workspace as the current one
+      } catch (error) {
+        console.error('Error adding workspace:', error);
+      }
+    }
+  };
+
+  const handleSignOut = () => {
+    // Redirect to Cognito's sign-out page
+    window.location.href = 'https://main.d2tf8n90uf18rf.amplifyapp.com/signout';
+  };
+
   return (
     <div className="dashboard">
       <div className="sidebar-menu">
@@ -71,7 +100,7 @@ function Dashboard() {
                 <option key={workspace.id} value={workspace.name}>{workspace.name}</option>
               ))}
             </select>
-            <button className="button-primary" onClick={() => alert('Add workspace functionality goes here')}>Add Workspace</button>
+            <button className="button-primary" onClick={handleAddWorkspace}>Add Workspace</button>
           </div>
 
           <div className="user-profile">
@@ -85,7 +114,7 @@ function Dashboard() {
                   <a href="/account-details">Account Details</a>
                   <a href="/reset-password">Reset Password</a>
                   <a href="/billing">Billing</a>
-                  <a href="/signout">Sign Out</a>
+                  <a href="#" onClick={handleSignOut}>Sign Out</a>
                 </div>
               )}
             </div>
