@@ -23,7 +23,7 @@ function Dashboard() {
           }
         });
 
-        const workspaceItems = response.data || []; // Ensure we handle the DynamoDB structure
+        const workspaceItems = response.data || []; // Handle response to ensure workspaces are properly extracted
         setWorkspaces(workspaceItems);
         setCurrentWorkspace(workspaceItems[0]?.WorkspaceName || ''); // Set the first workspace as default, or empty if none exist
       } catch (error) {
@@ -48,8 +48,8 @@ function Dashboard() {
       try {
         const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/workspaces', 
         { 
-          name: newWorkspaceName, 
-          description: newWorkspaceDescription 
+          workspaceName: newWorkspaceName, 
+          workspaceDescription: newWorkspaceDescription 
         }, 
         {
           headers: {
@@ -129,7 +129,7 @@ function Dashboard() {
                   <a href="/account-details">Account Details</a>
                   <a href="/reset-password">Reset Password</a>
                   <a href="/billing">Billing</a>
-                  <button onClick={handleSignOut}>Sign Out</button>
+                  <a onClick={handleSignOut}>Sign Out</a>
                 </div>
               )}
             </div>
@@ -143,8 +143,6 @@ function Dashboard() {
             <h3>Active Agents</h3>
             {/* Display agent summary */}
           </div>
-          <button onClick={handleApiCall}>Test API Call</button>
-          {responseMessage && <p>API Response: {responseMessage}</p>}
         </main>
 
         {/* Modal for Creating Workspace */}
