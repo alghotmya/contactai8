@@ -13,7 +13,6 @@ function Dashboard() {
   const [phoneNumber, setPhoneNumber] = useState('');
 
   useEffect(() => {
-    // Fetch workspaces from backend (DynamoDB via API Gateway)
     async function fetchWorkspaces() {
       const token = localStorage.getItem('id_token'); // Assuming you store the id_token in localStorage after login
       try {
@@ -22,7 +21,7 @@ function Dashboard() {
             Authorization: `Bearer ${token}`
           }
         });
-
+        console.log("Workspaces fetched:", response.data); // Log the fetched data
         const workspaceItems = response.data.Items || []; // Ensure we handle the DynamoDB structure
         setWorkspaces(workspaceItems);
         setCurrentWorkspace(workspaceItems[0]?.WorkspaceName || ''); // Set the first workspace as default, or empty if none exist
@@ -59,8 +58,8 @@ function Dashboard() {
           }
         });
         
-        // Assuming the response returns the full workspace object including WorkspaceID
         const newWorkspace = response.data;
+        console.log("New workspace created:", newWorkspace); // Log the created workspace
         
         setWorkspaces([...workspaces, newWorkspace]); // Update the workspace list
         setCurrentWorkspace(newWorkspace.WorkspaceName); // Set the new workspace as the current one
@@ -95,7 +94,6 @@ function Dashboard() {
   };
 
   const handleSignOut = () => {
-    // Redirect to Cognito's sign-out page
     window.location.href = 'https://main.d2tf8n90uf18rf.amplifyapp.com/signout';
   };
 
