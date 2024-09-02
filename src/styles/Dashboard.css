@@ -1,159 +1,71 @@
-/* Dashboard layout */
-.dashboard {
+/* Modal Styling */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  height: 100vh;
-  background-color: #f4f4f4;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-/* Sidebar menu */
-.sidebar-menu {
-  width: 250px;
-  background-color: #333;
-  color: #fff;
+.modal-content {
+  background-color: #fff;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  border-radius: 8px;
+  width: 400px;
+  text-align: center;
 }
 
-.sidebar-menu ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar-menu ul li {
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.sidebar-menu ul li a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.1rem;
-  padding: 10px;
-  width: 100%;
-  display: block;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar-menu ul li a:hover {
-  background-color: #444;
-}
-
-/* Dashboard content */
-.dashboard-content {
-  flex-grow: 1;
-  padding: 30px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.workspace-dropdown {
-  display: flex;
-  align-items: center;
-}
-
-.workspace-dropdown select {
-  background-color: #fff;
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 4px;
-}
-
-.workspace-dropdown button {
-  background-color: #ff9800;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  margin-left: 10px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
-
-.workspace-dropdown button:hover {
-  background-color: #e68900;
-}
-
-/* User profile */
-.user-profile {
-  position: relative;
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  color: #333;
-}
-
-.profile-info {
-  position: relative;
-}
-
-.profile-info .dropdown-button {
-  background: none;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  color: #333;
-}
-
-.profile-info .dropdown-content {
-  display: none;
-  position: absolute;
-  right: 0;
-  background-color: #fff;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  min-width: 160px;
-  border-radius: 4px;
-}
-
-.profile-info .dropdown-content a {
-  color: #333;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  transition: background-color 0.3s ease;
-}
-
-.profile-info .dropdown-content a:hover {
-  background-color: #f1f1f1;
-}
-
-.profile-info:hover .dropdown-content {
-  display: block;
-}
-
-main {
-  margin-top: 20px;
-}
-
-main h1 {
-  font-size: 2rem;
-  color: #333;
+.modal-content h2 {
   margin-bottom: 20px;
 }
 
-main p {
-  font-size: 1.2rem;
-  color: #666;
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-/* Agent summary */
-.agent-summary {
-  margin-top: 20px;
-  background-color: white;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+.modal-content .button-primary,
+.modal-content .button-secondary {
+  width: 48%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.modal-content .button-secondary {
+  background-color: #ccc;
+  color: #333;
+}
+
+/* Test Agent Box Styling */
+.test-agent-box {
+  margin-top: 30px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.test-agent-box h3 {
+  margin-bottom: 15px;
+}
+
+.test-agent-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.test-agent-box .button-primary {
+  width: 100%;
 }
