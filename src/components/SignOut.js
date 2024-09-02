@@ -12,9 +12,9 @@ const SignOut = () => {
       <div className="signout-buttons">
         <button onClick={() => navigate('/')}>Home Page</button>
         <button 
-          onClick={() => window.location.href = 'https://contactai.auth.ca-central-1.amazoncognito.com/login?client_id=YOUR_CLIENT_ID&response_type=code&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=https%3A%2F%2Fmain.d2tf8n90uf18rf.amplifyapp.com%2Fdashboard%2F'}
+          onClick={() => window.location.href = 'https://your_cognito_signup_url'}
         >
-          Sign In Again
+          Sign Up
         </button>
       </div>
     </div>
