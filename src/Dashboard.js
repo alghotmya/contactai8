@@ -20,8 +20,10 @@ function Dashboard() {
             Authorization: `Bearer ${token}`
           }
         });
-        setWorkspaces(response.data.Items || []); // Adjusted to handle DynamoDB response structure
-        setCurrentWorkspace(response.data.Items[0]?.name || ''); // Set the first workspace as default, or empty if none exist
+
+        const workspaceItems = response.data.Items || []; // Ensure we handle the DynamoDB structure
+        setWorkspaces(workspaceItems);
+        setCurrentWorkspace(workspaceItems[0]?.WorkspaceName || ''); // Set the first workspace as default, or empty if none exist
       } catch (error) {
         console.error('Error fetching workspaces:', error);
       }
@@ -45,7 +47,7 @@ function Dashboard() {
           Authorization: `Bearer ${token}`
         }
       });
-      setResponseMessage(JSON.stringify(response.data)); // Display the response in the UI
+      setResponseMessage(JSON.stringify(response.data)); // Display the response in the UI for debugging
     } catch (error) {
       console.error('Error calling the API:', error);
       setResponseMessage('Error calling the API: ' + error.message);
@@ -66,7 +68,7 @@ function Dashboard() {
         }, 
         {
           headers: {
-            Authorization: `Bearer {token}`
+            Authorization: `Bearer ${token}`
           }
         });
         
@@ -101,7 +103,9 @@ function Dashboard() {
             <label htmlFor="workspace-select">Current Workspace:</label>
             <select id="workspace-select" value={currentWorkspace} onChange={handleWorkspaceChange}>
               {workspaces.map((workspace) => (
-                <option key={workspace.id} value={workspace.name}>{workspace.name}</option>
+                <option key={workspace.WorkspaceID} value={workspace.WorkspaceName}>
+                  {workspace.WorkspaceName}
+                </option>
               ))}
             </select>
             <button className="button-primary" onClick={handleAddWorkspace}>Add Workspace</button>
