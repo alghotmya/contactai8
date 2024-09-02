@@ -48,10 +48,10 @@ function Dashboard() {
       try {
         const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/workspaces', 
         { 
-          workspaceName: newWorkspaceName, 
-          workspaceDescription: newWorkspaceDescription,
-          ownerUserID: 'YOUR_USER_ID', // Update this with the actual user ID
-          resourceLimits: { cpu: '2', memory: '4GB' } // Example values, update according to your requirements
+          WorkspaceName: newWorkspaceName, // Adjusted to match API payload
+          WorkspaceDescription: newWorkspaceDescription,
+          OwnerUserID: 'YOUR_USER_ID', // Update this with the actual user ID
+          ResourceLimits: { cpu: '2', memory: '4GB' } // Example values, update according to your requirements
         }, 
         {
           headers: {
@@ -59,8 +59,11 @@ function Dashboard() {
           }
         });
         
-        setWorkspaces([...workspaces, response.data]); // Update the workspace list
-        setCurrentWorkspace(response.data.workspaceName); // Set the new workspace as the current one
+        // Assuming the response returns the full workspace object including WorkspaceID
+        const newWorkspace = response.data;
+        
+        setWorkspaces([...workspaces, newWorkspace]); // Update the workspace list
+        setCurrentWorkspace(newWorkspace.WorkspaceName); // Set the new workspace as the current one
         setShowCreateWorkspaceModal(false); // Close the modal
       } catch (error) {
         console.error('Error adding workspace:', error);
@@ -123,7 +126,7 @@ function Dashboard() {
           </div>
 
           <div className="user-profile">
-            <span>Welcome, {currentWorkspace}</span>
+            <span>Welcome, [UserName]</span> {/* Replace [UserName] with actual user name */}
             <div className="profile-info">
               <button className="dropdown-button" onClick={toggleProfileOptions}>
                 Profile
