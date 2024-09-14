@@ -3,11 +3,11 @@ import '../styles/Header.css'; // Ensure the correct path to the CSS file
 
 const Header = () => {
   return (
-    <header>
+    <header className="header">
       <div className="logo" onClick={() => window.location.href = '/'}>
         ContactAI
       </div>
-      <nav>
+      <nav className="nav-links">
         <ul>
           <li>
             <a 
