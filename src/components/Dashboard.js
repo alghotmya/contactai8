@@ -1,67 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Ensure axios is installed for API requests
+import React, { useState } from 'react';
+import axios from 'axios'; // For making API calls
+import '../styles/Dashboard.css'; // Import CSS
 
 const Dashboard = () => {
-  const [inputText, setInputText] = useState('');
-  const [chatHistory, setChatHistory] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [workspaces, setWorkspaces] = useState([]);
-  const [currentWorkspace, setCurrentWorkspace] = useState('');
-  const [profileOptions, setProfileOptions] = useState(false);
+  // State for managing user input, chat messages, and error states
+  const [inputValue, setInputValue] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  // Function to handle API call to Bedrock
-  const handleInvokeAgent = async () => {
-    setErrorMessage(''); // Reset error message
-
+  // Function to handle Bedrock agent testing
+  const handleAgentTest = async () => {
     try {
+      // Call the Bedrock agent via API Gateway
       const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/invoke-agent', {
-        modelId: 'YourBedrockModelId',  // Replace with actual model ID
-        knowledgeBaseId: 'YourKnowledgeBaseId',  // Replace with actual knowledge base ID
-        prompt: inputText,  // Send the user input as the prompt
+        modelId: 'your-model-id',               // Replace with actual model ID
+        knowledgeBaseId: 'your-knowledgebase-id', // Replace with actual knowledge base ID
+        prompt: inputValue                      // User's input text
       });
 
-      // Append user input and agent response to chat history
-      setChatHistory((prevChat) => [
-        ...prevChat,
-        { role: 'user', message: inputText },
-        { role: 'agent', message: response.data.response }, // Assuming response.data.response contains the agent's reply
+      // Append user input and agent response to the chat window
+      setMessages([...messages, 
+        { sender: 'user', text: inputValue }, 
+        { sender: 'agent', text: response.data.message }
       ]);
+      setInputValue(''); // Clear input box after submission
     } catch (error) {
-      console.error('Error invoking Bedrock agent:', error);
-      setErrorMessage('Error invoking Bedrock agent');
+      console.error('Error invoking agent:', error);
+      setErrorMessage('Error invoking agent');
+      // Append the error message to the chat window
+      setMessages([...messages, 
+        { sender: 'user', text: inputValue }, 
+        { sender: 'agent', text: 'Error invoking agent' }
+      ]);
+      setInputValue(''); // Clear input box after error
     }
-
-    // Clear input after sending
-    setInputText('');
-  };
-
-  // Fetching workspaces (original functionality)
-  useEffect(() => {
-    async function fetchWorkspaces() {
-      const token = localStorage.getItem('id_token'); // Assuming token is stored in localStorage after login
-      try {
-        const response = await axios.get('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/workspaces', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        const workspaceItems = response.data.Items || []; // Ensure we handle DynamoDB structure
-        setWorkspaces(workspaceItems);
-        setCurrentWorkspace(workspaceItems[0]?.WorkspaceName || ''); // Set the first workspace as default
-      } catch (error) {
-        console.error('Error fetching workspaces:', error);
-      }
-    }
-    fetchWorkspaces();
-  }, []);
-
-  const handleWorkspaceChange = (event) => {
-    setCurrentWorkspace(event.target.value);
   };
 
   return (
     <div className="dashboard">
-      {/* Sidebar */}
       <div className="sidebar-menu">
         <ul>
           <li><a href="/agent-management">Agent Management</a></li>
@@ -74,56 +50,36 @@ const Dashboard = () => {
 
       <div className="dashboard-content">
         <header>
+          <h1>Contact AI Dashboard</h1>
           <div className="workspace-dropdown">
-            <label htmlFor="workspace-select">Current Workspace:</label>
-            <select id="workspace-select" value={currentWorkspace} onChange={handleWorkspaceChange}>
-              {workspaces.map((workspace) => (
-                <option key={workspace.WorkspaceID} value={workspace.WorkspaceName}>
-                  {workspace.WorkspaceName}
-                </option>
-              ))}
+            <label htmlFor="workspace-select">Select Workspace:</label>
+            <select id="workspace-select">
+              <option value="workspace1">Workspace 1</option>
+              <option value="workspace2">Workspace 2</option>
             </select>
-          </div>
-
-          <div className="user-profile">
-            <span>Welcome, [UserName]</span> {/* Replace [UserName] with actual user name */}
-            <div className="profile-info">
-              <button className="dropdown-button" onClick={() => setProfileOptions(!profileOptions)}>
-                Profile
-              </button>
-              {profileOptions && (
-                <div className="dropdown-content">
-                  <a href="/account-details">Account Details</a>
-                  <a href="/reset-password">Reset Password</a>
-                  <a href="/billing">Billing</a>
-                  <a href="#" onClick={() => { localStorage.removeItem('id_token'); window.location.href = '/signout'; }}>Sign Out</a>
-                </div>
-              )}
-            </div>
           </div>
         </header>
 
         <main>
-          <h1>Dashboard</h1>
-
-          {/* Test Bedrock Agent Box */}
+          <h3>Test Bedrock Agent</h3>
           <div className="test-agent-box">
-            <h3>Test Bedrock Agent</h3>
-            <input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder="Enter your input"
+            <input 
+              type="text" 
+              placeholder="Enter your input" 
+              value={inputValue} 
+              onChange={(e) => setInputValue(e.target.value)} 
             />
-            <button className="button-primary" onClick={handleInvokeAgent}>Invoke Agent</button>
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            <button className="button-primary" onClick={handleAgentTest}>Invoke Agent</button>
           </div>
 
-          {/* Chat window for showing conversation with agent */}
+          {/* Display error message */}
+          {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+
+          {/* Chat window to display messages */}
           <div className="chat-window">
-            {chatHistory.map((chat, index) => (
-              <div key={index} className={`chat-message ${chat.role}`}>
-                <p>{chat.message}</p>
+            {messages.map((message, index) => (
+              <div key={index} className={`chat-message ${message.sender}`}>
+                {message.text}
               </div>
             ))}
           </div>
