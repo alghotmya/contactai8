@@ -112,3 +112,50 @@ header {
 .button-primary:hover {
   background-color: #e68900;
 }
+/* Dashboard.css */
+.dashboard {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar-menu {
+  width: 250px;
+  background-color: #111;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu ul li {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.sidebar-menu ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  padding: 10px;
+  width: 100%;
+  display: block;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-menu ul li a:hover {
+  background-color: #222;
+}
+
+.dashboard-content {
+  flex-grow: 1;
+  padding: 30px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

@@ -1,33 +1,33 @@
-header {
+/* Header.css */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
   background-color: #111;
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-header .logo {
+.logo {
   font-size: 1.5rem;
-  color: #f0f0f0;
-  cursor: pointer;
-  text-transform: uppercase;
   font-weight: bold;
+  cursor: pointer;
 }
 
-header nav ul {
-  list-style-type: none;
+.nav-links ul {
+  list-style: none;
+  display: flex;
   margin: 0;
   padding: 0;
-  display: flex;
-  gap: 20px;
 }
 
-header nav ul li {
-  display: inline;
+.nav-links ul li {
+  margin-left: 20px;
 }
 
-header nav ul li a {
-  color: #f0f0f0;
+.auth-link {
+  color: #ff9800;
   text-decoration: none;
   font-size: 1rem;
   padding: 10px 15px;
@@ -35,21 +35,7 @@ header nav ul li a {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-header nav ul li a:hover {
-  color: #ff9800;
-  background-color: #222;
-}
-
-/* Updated Auth Links (Sign In and Sign Up) */
-.auth-link {
-  color: #ffffff;
-  padding: 8px 16px;
-  background-color: #ff9800;
-  border-radius: 5px;
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
 .auth-link:hover {
   background-color: #e68900;
+  color: #fff;
 }

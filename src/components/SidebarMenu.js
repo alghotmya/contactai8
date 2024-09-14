@@ -1,11 +1,11 @@
-// Location: src/components/SidebarMenu.js
-
 import React from 'react';
+import '../styles/SidebarMenu.css'; // Ensure this path is correct
 
 const SidebarMenu = () => {
   return (
     <nav className="sidebar-menu">
       <ul>
+        <li><a href="/dashboard">Dashboard</a></li>
         <li><a href="/agent">Agent Management</a></li>
         <li><a href="/settings">Settings</a></li>
         <li><a href="/support">Support</a></li>
