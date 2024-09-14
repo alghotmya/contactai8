@@ -1,46 +1,43 @@
-// File: src/components/Settings.js
 import React, { useState } from 'react';
-import axios from 'axios';
-import '../styles/Settings.css'; 
+import axios from 'axios'; // For making API calls
+import '../styles/Settings.css'; // Import CSS
 
-function Settings() {
-  const [knowledgeBaseFile, setKnowledgeBaseFile] = useState(null);
-  const [syncMessage, setSyncMessage] = useState('');
-  const agentId = 'E4UXSHY5Y7'; // Use your specific agent ID
-  const knowledgeBaseId = 'SY0DQHPVRD'; // Use your knowledge base ID
+const Settings = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
 
+  // Function to handle file selection
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  // Function to handle knowledge base syncing
   const handleKnowledgeBaseSync = async () => {
-    const token = localStorage.getItem('id_token');
     const formData = new FormData();
-    formData.append('file', knowledgeBaseFile);
-    formData.append('agentId', agentId);
-    formData.append('knowledgeBaseId', knowledgeBaseId);
+    formData.append('file', selectedFile);
 
     try {
-      const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/knowledge-base/upload', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        }
+      // Post file to the upload API
+      const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setSyncMessage('Knowledge Base Synced Successfully');
+      alert('Knowledge base synced successfully');
     } catch (error) {
-      setSyncMessage('Error syncing Knowledge Base');
       console.error('Error syncing knowledge base:', error);
+      alert('Failed to sync knowledge base');
     }
   };
 
   return (
-    <div className="settings-page">
-      <h1>Settings</h1>
-      <div className="knowledge-base-sync">
+    <div className="settings">
+      <h2>Settings</h2>
+
+      <div className="upload-section">
         <h3>Upload Knowledge Base</h3>
-        <input type="file" onChange={(e) => setKnowledgeBaseFile(e.target.files[0])} />
-        <button onClick={handleKnowledgeBaseSync} className="button-primary">Sync Knowledge Base</button>
-        {syncMessage && <p>{syncMessage}</p>}
+        <input type="file" onChange={handleFileChange} />
+        <button className="button-primary" onClick={handleKnowledgeBaseSync}>Sync Knowledge Base</button>
       </div>
     </div>
   );
-}
+};
 
 export default Settings;
