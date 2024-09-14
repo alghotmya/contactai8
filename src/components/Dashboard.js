@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // For making API calls
+import Header from './Header'; // Import the Header component
+import SidebarMenu from './SidebarMenu'; // Assuming you also have a SidebarMenu component
 import '../styles/Dashboard.css'; // Import CSS
 
 const Dashboard = () => {
@@ -13,8 +15,8 @@ const Dashboard = () => {
     try {
       // Call the Bedrock agent via API Gateway
       const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/invoke-agent', {
-        modelId: 'your-model-id',               // Replace with actual model ID
-        knowledgeBaseId: 'your-knowledgebase-id', // Replace with actual knowledge base ID
+        modelId: 'E4UXSHY5Y7',               // Replace with actual model ID
+        knowledgeBaseId: 'SY0DQHPVRD', // Replace with actual knowledge base ID
         prompt: inputValue                      // User's input text
       });
 
