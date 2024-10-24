@@ -1,53 +1,60 @@
+// Location: src/components/Dashboard.js
 import React, { useState } from 'react';
 import axios from 'axios'; // For making API calls
-import Header from './Header'; // Import the Header component
-import SidebarMenu from './SidebarMenu'; // Assuming you also have a SidebarMenu component
+import Header from './Header'; // Import the Header component if needed
+import SidebarMenu from './SidebarMenu'; // Import SidebarMenu component if needed
+import ActiveCall from './ActiveCall';
+import AssistantForm from './AssistantForm';
+import AssistantList from './AssistantList';
+import CallControls from './CallControls';
 import '../styles/Dashboard.css'; // Import CSS
 
 const Dashboard = () => {
-  // State for managing user input, chat messages, and error states
   const [inputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [assistants, setAssistants] = useState([]);
+  const [selectedAssistant, setSelectedAssistant] = useState(null);
+  const [isCallActive, setIsCallActive] = useState(false);
 
-  // Function to handle Bedrock agent testing
   const handleAgentTest = async () => {
     try {
-      // Call the Bedrock agent via API Gateway
       const response = await axios.post('https://dqjq6f5kaa.execute-api.ca-central-1.amazonaws.com/prod/invoke-agent', {
-        modelId: 'E4UXSHY5Y7',               // Replace with actual model ID
-        knowledgeBaseId: 'SY0DQHPVRD', // Replace with actual knowledge base ID
-        prompt: inputValue                      // User's input text
+        modelId: 'E4UXSHY5Y7',
+        knowledgeBaseId: 'SY0DQHPVRD',
+        prompt: inputValue,
       });
 
-      // Append user input and agent response to the chat window
-      setMessages([...messages, 
-        { sender: 'user', text: inputValue }, 
-        { sender: 'agent', text: response.data.message }
-      ]);
-      setInputValue(''); // Clear input box after submission
+      setMessages([...messages, { sender: 'user', text: inputValue }, { sender: 'agent', text: response.data.message }]);
+      setInputValue('');
     } catch (error) {
       console.error('Error invoking agent:', error);
       setErrorMessage('Error invoking agent');
-      // Append the error message to the chat window
-      setMessages([...messages, 
-        { sender: 'user', text: inputValue }, 
-        { sender: 'agent', text: 'Error invoking agent' }
-      ]);
-      setInputValue(''); // Clear input box after error
+      setMessages([...messages, { sender: 'user', text: inputValue }, { sender: 'agent', text: 'Error invoking agent' }]);
+      setInputValue('');
     }
+  };
+
+  const handleAssistantCreated = (assistantConfig) => {
+    setAssistants([...assistants, assistantConfig]);
+  };
+
+  const handleSelectAssistant = (assistant) => {
+    setSelectedAssistant(assistant);
+  };
+
+  const handleCallStarted = () => {
+    setIsCallActive(true);
+  };
+
+  const handleCallEnded = () => {
+    setIsCallActive(false);
   };
 
   return (
     <div className="dashboard">
       <div className="sidebar-menu">
-        <ul>
-          <li><a href="/agent-management">Agent Management</a></li>
-          <li><a href="/settings">Settings</a></li>
-          <li><a href="/support">Support</a></li>
-          <li><a href="/documentation">Documentation/Tutorial</a></li>
-          <li><a href="/reporting">Reporting</a></li>
-        </ul>
+        <SidebarMenu /> {/* Sidebar menu is displayed here */}
       </div>
 
       <div className="dashboard-content">
@@ -74,10 +81,8 @@ const Dashboard = () => {
             <button className="button-primary" onClick={handleAgentTest}>Invoke Agent</button>
           </div>
 
-          {/* Display error message */}
           {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
-          {/* Chat window to display messages */}
           <div className="chat-window">
             {messages.map((message, index) => (
               <div key={index} className={`chat-message ${message.sender}`}>
@@ -85,6 +90,22 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
+
+          <h3>Create and Manage Assistants</h3>
+          <AssistantForm onAssistantCreated={handleAssistantCreated} />
+          <AssistantList assistants={assistants} onSelectAssistant={handleSelectAssistant} />
+          
+          {selectedAssistant && (
+            <div>
+              <h3>Call Controls for {selectedAssistant.name}</h3>
+              <CallControls 
+                assistant={selectedAssistant} 
+                onCallStarted={handleCallStarted} 
+                onCallEnded={handleCallEnded} 
+              />
+              {isCallActive && <ActiveCall assistant={selectedAssistant} />}
+            </div>
+          )}
         </main>
       </div>
     </div>
