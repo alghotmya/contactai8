@@ -1,8 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import DemoRequestForm from './DemoRequestForm';
-import TestingAgentForm from './TestingAgentForm';
+
 import '../styles/LandingPage.css'; // Ensure the correct path to CSS
 
 const LandingPage = () => {
