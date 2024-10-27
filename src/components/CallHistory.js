@@ -9,10 +9,13 @@ const CallHistory = () => {
   useEffect(() => {
     const fetchCallHistory = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/call`, {
-          params: { limit: 7 }, // set the limit to 7 calls
+        // Update the URL and add limit as a query parameter
+        const response = await axios.get('https://api.vapi.ai/call', {
           headers: {
             'Authorization': `Bearer ${process.env.REACT_APP_VAPI_PRIVATE_KEY}`, // Use the private key from env
+          },
+          params: {
+            limit: 7, // Set the limit parameter for the API request
           },
         });
         setCallHistory(response.data); // Assuming response.data is an array of call objects
@@ -37,7 +40,7 @@ const CallHistory = () => {
               <p>Summary: {call.analysis?.summary || 'No summary available'}</p>
               <details>
                 <summary>Transcript</summary>
-                <p>{call.transcript || 'Transcript not available'}</p>
+                <p>{call.artifact?.transcript || 'Transcript not available'}</p>
               </details>
             </li>
           ))}
