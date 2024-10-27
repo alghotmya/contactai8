@@ -15,19 +15,14 @@ const AssistantForm = ({ onAssistantCreated }) => {
     { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" }
   ];
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    const selectedVoice = availableVoices.find(v => v.voiceId === voice);
+    const selectedVoice = availableVoices.find((v) => v.voiceId === voice);
 
     const assistantConfig = {
       name,
       firstMessage: welcomeMessage,
-      transcriber: {
-        provider: "deepgram",
-        model: "nova-2",
-        language,
-      },
+      transcriber: { provider: "deepgram", model: "nova-2", language },
       voice: {
         provider: selectedVoice.provider,
         voiceId: selectedVoice.voiceId,
@@ -40,16 +35,11 @@ const AssistantForm = ({ onAssistantCreated }) => {
       },
     };
 
-    try {
-      onAssistantCreated(assistantConfig);
-      console.log("Assistant created successfully:", assistantConfig);
-    } catch (err) {
-      console.error("Error creating assistant:", err);
-    }
+    onAssistantCreated(assistantConfig);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="assistant-form container">
       <label>
         Assistant Name:
         <input
