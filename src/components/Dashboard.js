@@ -1,11 +1,11 @@
 // Location: src/components/Dashboard.js
 import React, { useState } from 'react';
-import SidebarMenu from './SidebarMenu'; // Import SidebarMenu component if needed
+import SidebarMenu from './SidebarMenu';
 import ActiveCall from './ActiveCall';
 import AssistantForm from './AssistantForm';
 import AssistantList from './AssistantList';
 import CallControls from './CallControls';
-import '../styles/Dashboard.css'; // Import CSS
+import '../styles/Dashboard.css';
 
 const Dashboard = () => {
   
@@ -60,7 +60,44 @@ const Dashboard = () => {
             ))}
           </div>
 
-          <h3>Create and Manage Assistants</h3>
+          <div className="create-manage-assistants">
+            <h3>Create and Manage Assistants</h3>
+            <form className="assistant-form">
+              <label htmlFor="assistant-name">Assistant Name:</label>
+              <input id="assistant-name" type="text" placeholder="Enter assistant name" />
+
+              <label htmlFor="welcome-message">Welcome Message:</label>
+              <input id="welcome-message" type="text" placeholder="Enter welcome message" />
+
+              <label htmlFor="voice">Voice:</label>
+              <select id="voice">
+                <option value="andrew">Andrew (azure)</option>
+                {/* Add other voice options here */}
+              </select>
+
+              <label htmlFor="language">Language:</label>
+              <select id="language">
+                <option value="en-US">en-US</option>
+                {/* Add other language options here */}
+              </select>
+
+              <button type="submit">Create Assistant</button>
+            </form>
+
+            <div className="saved-assistants">
+              <h4>Saved Assistants</h4>
+              <ul>
+                {assistants.map((assistant, index) => (
+                  <li key={index}>
+                    <span className="assistant-name">{assistant.name}</span>
+                    <button className="delete-button">Delete</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          
+          <h3>Assistant List</h3>
           <AssistantForm onAssistantCreated={handleAssistantCreated} />
           <AssistantList assistants={assistants} onSelectAssistant={handleSelectAssistant} />
           
