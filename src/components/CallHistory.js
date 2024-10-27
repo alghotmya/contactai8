@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import SidebarMenu from './SidebarMenu'; // Ensures sidebar is on this page too
+import { VapiClient } from '@vapi/server-sdk';
 
 const CallHistory = () => {
   const [callHistory, setCallHistory] = useState([]);
@@ -10,20 +11,29 @@ const CallHistory = () => {
   useEffect(() => {
     const fetchCallHistory = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/calls`, {
-          headers: {
-            'Authorization': `Bearer ${process.env.VAPI_PRIVATE_KEY}`, // Use the private key from env
-          },
-        });
+        // Initialize VapiClient with the private key
+        const client = new VapiClient({ token: process.env.VAPI_PRIVATE_KEY });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch call history');
-        }
+        // Fetch the list of calls
+        const callList = await client.calls.list();
+        
+        // Fetch details for each call ID
+        const callDetails = await Promise.all(
+          callList.map(async (call) => {
+            const details = await client.calls.get(call.id);
+            return {
+              id: details.id,
+              date: details.createdAt,
+              summary: details.analysis?.summary || 'No summary available',
+              transcript: details.artifact?.transcript || 'Transcript not available',
+            };
+          })
+        );
 
-        const data = await response.json();
-        setCallHistory(data); // Assuming 'data' is an array of call objects
+        // Set the call history state with fetched call details
+        setCallHistory(callDetails);
       } catch (error) {
-        setError(error.message);
+        setError(error.message || 'Failed to fetch call history');
       }
     };
 
@@ -39,11 +49,11 @@ const CallHistory = () => {
         <ul>
           {callHistory.map((call) => (
             <li key={call.id}>
-              <h3>Date: {new Date(call.createdAt).toLocaleDateString()}</h3>
-              <p>Summary: {call.analysis?.summary || 'No summary available'}</p>
+              <h3>Date: {new Date(call.date).toLocaleDateString()}</h3>
+              <p>Summary: {call.summary}</p>
               <details>
                 <summary>Transcript</summary>
-                <p>{call.artifact?.transcript || 'Transcript not available'}</p>
+                <p>{call.transcript}</p>
               </details>
             </li>
           ))}
