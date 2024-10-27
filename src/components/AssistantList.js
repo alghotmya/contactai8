@@ -2,16 +2,19 @@ import React from "react";
 
 const AssistantList = ({ assistants, onSelectAssistant }) => {
   return (
-    <div>
+    <div className="container saved-assistants">
       <h2>Saved Assistants</h2>
       <ul>
         {assistants.map((assistant, index) => (
           <li
             key={index}
-            onClick={() => onSelectAssistant(assistant)} // When an assistant is clicked, pass it to the parent component
-            style={{ cursor: "pointer", padding: "5px", border: "1px solid #ddd" }}
+            onClick={() => onSelectAssistant(assistant)}
+            className="assistant-item"
           >
-            {assistant.name} - {assistant.firstMessage}
+            <span className="assistant-info">
+              {assistant.name} - {assistant.firstMessage}
+            </span>
+            <button className="delete-button">Delete</button>
           </li>
         ))}
       </ul>
