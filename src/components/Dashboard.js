@@ -1,7 +1,6 @@
 // Location: src/components/Dashboard.js
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link for navigation
 import SidebarMenu from './SidebarMenu';
 import ActiveCall from './ActiveCall';
 import AssistantForm from './AssistantForm';
@@ -54,11 +53,6 @@ const Dashboard = () => {
               <option value="workspace2">Workspace 2</option>
             </select>
           </div>
-          
-          {/* Link to navigate to Call History page */}
-          <Link to="/call-history" className="call-history-link">
-            View Call History
-          </Link>
         </header>
 
         <main>
