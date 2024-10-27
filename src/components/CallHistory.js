@@ -1,8 +1,6 @@
-// Location: src/components/CallHistory.js
-
 import React, { useEffect, useState } from 'react';
-import SidebarMenu from './SidebarMenu'; // Ensures sidebar is on this page too
-import { VapiClient } from '@vapi/server-sdk';
+import axios from 'axios';
+import SidebarMenu from './SidebarMenu';
 
 const CallHistory = () => {
   const [callHistory, setCallHistory] = useState([]);
@@ -11,29 +9,14 @@ const CallHistory = () => {
   useEffect(() => {
     const fetchCallHistory = async () => {
       try {
-        // Initialize VapiClient with the private key
-        const client = new VapiClient({ token: process.env.VAPI_PRIVATE_KEY });
-
-        // Fetch the list of calls
-        const callList = await client.calls.list();
-        
-        // Fetch details for each call ID
-        const callDetails = await Promise.all(
-          callList.map(async (call) => {
-            const details = await client.calls.get(call.id);
-            return {
-              id: details.id,
-              date: details.createdAt,
-              summary: details.analysis?.summary || 'No summary available',
-              transcript: details.artifact?.transcript || 'Transcript not available',
-            };
-          })
-        );
-
-        // Set the call history state with fetched call details
-        setCallHistory(callDetails);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/calls`, {
+          headers: {
+            'Authorization': `Bearer ${process.env.VAPI_PRIVATE_KEY}`, // Use the private key from env
+          },
+        });
+        setCallHistory(response.data); // Assuming response.data is an array of call objects
       } catch (error) {
-        setError(error.message || 'Failed to fetch call history');
+        setError(error.message);
       }
     };
 
@@ -42,18 +25,18 @@ const CallHistory = () => {
 
   return (
     <div className="call-history">
-      <SidebarMenu /> {/* Sidebar menu for easy navigation */}
+      <SidebarMenu />
       <h2>Call History</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {callHistory.length > 0 ? (
         <ul>
           {callHistory.map((call) => (
             <li key={call.id}>
-              <h3>Date: {new Date(call.date).toLocaleDateString()}</h3>
-              <p>Summary: {call.summary}</p>
+              <h3>Date: {new Date(call.createdAt).toLocaleDateString()}</h3>
+              <p>Summary: {call.analysis?.summary || 'No summary available'}</p>
               <details>
                 <summary>Transcript</summary>
-                <p>{call.transcript}</p>
+                <p>{call.artifact?.transcript || 'Transcript not available'}</p>
               </details>
             </li>
           ))}
