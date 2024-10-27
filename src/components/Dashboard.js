@@ -60,7 +60,7 @@ const Dashboard = () => {
             ))}
           </div>
 
-          <h3>Create and Manage Assistants</h3>
+          <h3>Create and  Manage Assistants</h3>
           <AssistantForm onAssistantCreated={handleAssistantCreated} />
           <AssistantList assistants={assistants} onSelectAssistant={handleSelectAssistant} />
           
