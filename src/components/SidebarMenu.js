@@ -1,18 +1,19 @@
+// Location: src/components/SidebarMenu.js
+
 import React from 'react';
-import '../styles/SidebarMenu.css'; // Ensure this path is correct
+import { Link } from 'react-router-dom';
 
 const SidebarMenu = () => {
   return (
-    <nav className="sidebar-menu">
+    <div className="sidebar">
+      <h3>Menu</h3>
       <ul>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/agent">Agent Management</a></li>
-        <li><a href="/settings">Settings</a></li>
-        <li><a href="/support">Support</a></li>
-        <li><a href="/documentation">Documentation</a></li>
-        <li><a href="/reporting">Reporting</a></li>
+        <li><Link to="/main">Dashboard</Link></li>
+        <li><Link to="/call-history">View Call History</Link></li> {/* Added Call History link */}
+        <li><Link to="/settings">Settings</Link></li>
+        <li><Link to="/signout">Sign Out</Link></li>
       </ul>
-    </nav>
+    </div>
   );
 };
 
