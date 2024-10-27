@@ -9,7 +9,7 @@ const SidebarMenu = () => {
       <h3>Menu</h3>
       <ul>
         <li><Link to="/main">Dashboard</Link></li>
-        <li><Link to="/call-history">View Call History</Link></li> {/* Added Call History link */}
+        <li><Link to="/call-history">View Call History</Link></li> {/* Call History link */}
         <li><Link to="/settings">Settings</Link></li>
         <li><Link to="/signout">Sign Out</Link></li>
       </ul>
