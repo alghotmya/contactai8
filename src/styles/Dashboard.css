@@ -329,3 +329,102 @@ header {
   background-color: #dff0d8;
   border-radius: 4px;
 }
+/* General styling for headings and labels */
+.dashboard h3, .dashboard label {
+  font-size: 1.2rem;
+  color: #333; /* Ensure consistent color */
+  margin-bottom: 8px;
+}
+
+/* Form styling */
+.assistant-form, .call-controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Input and select fields styling */
+.assistant-form input, 
+.assistant-form select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.assistant-form input:focus,
+.assistant-form select:focus {
+  border-color: #007bff; /* Match focus color with app's theme */
+  outline: none;
+}
+
+/* Button styling for Create Assistant and Call Controls */
+.assistant-form button, .call-controls-section button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.assistant-form button:hover, 
+.call-controls-section button:hover {
+  background-color: #0056b3;
+}
+
+.call-controls-section {
+  margin-top: 20px;
+}
+
+.call-controls-section button {
+  margin-right: 10px; /* Space between buttons */
+}
+
+/* Saved Assistants styling */
+.saved-assistants {
+  margin-top: 20px;
+}
+
+.saved-assistants ul {
+  list-style: none;
+  padding: 0;
+  font-size: 1rem;
+}
+
+.saved-assistants li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.saved-assistants li .assistant-name {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Button styling for saved assistants delete button */
+.saved-assistants li .delete-button {
+  background-color: #dc3545;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.saved-assistants li .delete-button:hover {
+  background-color: #c82333;
+}
