@@ -12,8 +12,8 @@ const Dashboard = () => {
   const [assistants, setAssistants] = useState([]);
   const [selectedAssistant, setSelectedAssistant] = useState(null);
   const [isCallActive, setIsCallActive] = useState(false);
-  const [messages] = useState([]); // Remove setMessages if not needed
-  const [errorMessage] = useState(""); // Remove setErrorMessage if not needed
+  const [messages] = useState([]);
+  const [errorMessage] = useState("");
 
   const handleAssistantCreated = (assistantConfig) => {
     setAssistants([...assistants, assistantConfig]);
@@ -34,7 +34,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="sidebar-menu">
-        <SidebarMenu /> {/* Sidebar menu is displayed here */}
+        <SidebarMenu />
       </div>
 
       <div className="dashboard-content">
@@ -60,49 +60,12 @@ const Dashboard = () => {
             ))}
           </div>
 
-          <div className="create-manage-assistants">
-            <h3>Create and Manage Assistants</h3>
-            <form className="assistant-form">
-              <label htmlFor="assistant-name">Assistant Name:</label>
-              <input id="assistant-name" type="text" placeholder="Enter assistant name" />
-
-              <label htmlFor="welcome-message">Welcome Message:</label>
-              <input id="welcome-message" type="text" placeholder="Enter welcome message" />
-
-              <label htmlFor="voice">Voice:</label>
-              <select id="voice">
-                <option value="andrew">Andrew (azure)</option>
-                {/* Add other voice options here */}
-              </select>
-
-              <label htmlFor="language">Language:</label>
-              <select id="language">
-                <option value="en-US">en-US</option>
-                {/* Add other language options here */}
-              </select>
-
-              <button type="submit">Create Assistant</button>
-            </form>
-
-            <div className="saved-assistants">
-              <h4>Saved Assistants</h4>
-              <ul>
-                {assistants.map((assistant, index) => (
-                  <li key={index}>
-                    <span className="assistant-name">{assistant.name}</span>
-                    <button className="delete-button">Delete</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          
           <h3>Assistant List</h3>
           <AssistantForm onAssistantCreated={handleAssistantCreated} />
           <AssistantList assistants={assistants} onSelectAssistant={handleSelectAssistant} />
           
           {selectedAssistant && (
-            <div>
+            <div className="call-controls-section">
               <h3>Call Controls for {selectedAssistant.name}</h3>
               <CallControls 
                 assistant={selectedAssistant} 

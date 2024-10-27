@@ -253,3 +253,79 @@ header {
 .saved-assistants li .delete-button:hover {
   background-color: #c82333;
 }
+/* Assistant List and Form Styling */
+.assistant-list {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.assistant-list h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.assistant-form,
+.assistant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.assistant-form label,
+.assistant-list label {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.assistant-form input,
+.assistant-form select,
+.assistant-list input,
+.assistant-list select {
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.assistant-form button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.assistant-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Call Controls Section Styling */
+.call-controls-section {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.call-controls-section h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.call-controls-section .active-call {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #dff0d8;
+  border-radius: 4px;
+}
