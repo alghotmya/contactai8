@@ -22,23 +22,64 @@ h2 {
     color: red;
 }
 
-.call-list {
-    list-style: none;
-    padding: 0;
-}
-
-.call-item {
-    background-color: #1e2342;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.call-item h3, .call-item p, .call-item details {
+.call-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
     color: #dcdde1;
-    margin: 5px 0;
+    background-color: #1e2342;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.call-history-table th, .call-history-table td {
+    padding: 12px 15px;
+    border: 1px solid #3a4063;
+    text-align: left;
+}
+
+.call-history-table th {
+    background-color: #2a314d;
+    color: #9ea7c2;
+    font-weight: bold;
+}
+
+.call-history-table td {
+    background-color: #242b4a;
+}
+
+.call-history-table tr:hover {
+    background-color: #2a2f4a;
 }
 
 .no-history {
+    text-align: center;
+    padding: 20px;
     color: #9ea7c2;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    background-color: #5567e0;
+    color: #ffffff;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination button:hover {
+    background-color: #4454b8;
+}
+
+.pagination span {
+    color: #e4e6eb;
 }
