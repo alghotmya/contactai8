@@ -1,24 +1,28 @@
+// Location: src/components/CallHistory.js
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SidebarMenu from './SidebarMenu';
+import './CallHistory.css';
 
 const CallHistory = () => {
   const [callHistory, setCallHistory] = useState([]);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const callsPerPage = 5; // Number of calls to display per page
 
   useEffect(() => {
     const fetchCallHistory = async () => {
       try {
-        // Update the URL and add limit as a query parameter
         const response = await axios.get('https://api.vapi.ai/call', {
           headers: {
             'Authorization': `Bearer ${process.env.REACT_APP_VAPI_PRIVATE_KEY}`, // Use the private key from env
           },
           params: {
-            limit: 7, // Set the limit parameter for the API request
+            limit: 50, // Fetch more data initially
           },
         });
-        setCallHistory(response.data); // Assuming response.data is an array of call objects
+        setCallHistory(response.data);
       } catch (error) {
         setError(error.message);
       }
@@ -27,27 +31,65 @@ const CallHistory = () => {
     fetchCallHistory();
   }, []);
 
+  // Pagination logic
+  const indexOfLastCall = currentPage * callsPerPage;
+  const indexOfFirstCall = indexOfLastCall - callsPerPage;
+  const currentCalls = callHistory.slice(indexOfFirstCall, indexOfLastCall);
+  const totalPages = Math.ceil(callHistory.length / callsPerPage);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
-    <div className="call-history">
+    <div className="call-history-container">
       <SidebarMenu />
-      <h2>Call History</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {callHistory.length > 0 ? (
-        <ul>
-          {callHistory.map((call) => (
-            <li key={call.id}>
-              <h3>Date: {new Date(call.createdAt).toLocaleDateString()}</h3>
-              <p>Summary: {call.analysis?.summary || 'No summary available'}</p>
-              <details>
-                <summary>Transcript</summary>
-                <p>{call.artifact?.transcript || 'Transcript not available'}</p>
-              </details>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No call history available.</p>
-      )}
+      <div className="call-history-content">
+        <h2>Call History</h2>
+        {error && <p className="error-message">{error}</p>}
+        <table className="call-history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Summary</th>
+              <th>Transcript</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentCalls.length > 0 ? (
+              currentCalls.map((call) => (
+                <tr key={call.id}>
+                  <td>{new Date(call.createdAt).toLocaleDateString()}</td>
+                  <td>{call.analysis?.summary || 'No summary available'}</td>
+                  <td>
+                    <details>
+                      <summary>View Transcript</summary>
+                      <p>{call.artifact?.transcript || 'Transcript not available'}</p>
+                    </details>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="no-history">No call history available.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <div className="pagination">
+          <button onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</button>
+          <span>Page {currentPage} of {totalPages}</span>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+        </div>
+      </div>
     </div>
   );
 };
