@@ -61,7 +61,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
         voiceId: selectedVoice.voiceId,
         speed: 1.0
       },
-      forwardingPhoneNumber: "+1234567890", // Valid E.164 format number
+      forwardingPhoneNumber: "+11234567890", // Valid E.164 format number
       recordingEnabled: true,
       endCallFunctionEnabled: true,
       dialKeypadFunctionEnabled: false,
