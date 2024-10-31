@@ -1,11 +1,13 @@
+// Location: src/components/AssistantForm.js
+
 import React, { useState } from "react";
 import '../styles/AssistantForm.css';
-import { AiOutlineUserAdd } from 'react-icons/ai'; // Importing an icon library
+import { AiOutlineUserAdd } from 'react-icons/ai'; // Importing an icon
 
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState("");
-  const [instruction, setInstruction] = useState(""); // Custom instruction field for assistant
+  const [instruction, setInstruction] = useState("");
   const [voice, setVoice] = useState("andrew");
   const [language, setLanguage] = useState("en-US");
 
@@ -91,7 +93,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
           placeholder="e.g., You are a friendly customer support assistant."
-          rows="3"
+          rows="2" /* Reduced height */
         />
       </label>
 
