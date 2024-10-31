@@ -44,8 +44,8 @@ const AssistantForm = ({ onAssistantCreated }) => {
       },
       model: {
         provider: "openai",
-        model: "gpt-4",
-        fallbackModels: ["gpt-4-0-realtime-preview-2024-10-01"], // Valid fallback model
+        model: "gpt-4-turbo", // Use a valid fallback model
+        fallbackModels: ["gpt-4-turbo"], // Valid fallback model
         messages: [
           {
             role: "system",
