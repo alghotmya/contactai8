@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Vapi from "@vapi-ai/web";  // Use local Vapi instance
+import '../styles/GeneralComponents.css';
+
 
 const ActiveCall = ({ assistant }) => {
   const [volumeLevel, setVolumeLevel] = useState(0);

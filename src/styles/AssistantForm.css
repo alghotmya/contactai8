@@ -1,61 +1,79 @@
 /* Location: src/styles/AssistantForm.css */
 
 .assistant-form {
-    background-color: #242b4a;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    color: #e4e6eb;
+    background-color: #f5f7fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    color: #333;
     width: 100%;
-    max-width: 600px;
+    max-width: 500px;
     margin: auto;
+    font-family: 'Roboto', sans-serif;
 }
 
 .assistant-form label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #a6b2c7;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #4a4a4a;
 }
 
 .assistant-form input, 
 .assistant-form select, 
 .assistant-form textarea {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #3a4063;
-    border-radius: 4px;
-    background-color: #2a314d;
-    color: #dcdde1;
-    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.assistant-form input:focus, 
+.assistant-form select:focus, 
+.assistant-form textarea:focus {
+    border-color: #6c63ff;
+    outline: none;
 }
 
 .assistant-form input::placeholder, 
 .assistant-form textarea::placeholder {
-    color: #9ea7c2;
+    color: #aaa;
 }
 
 .assistant-form .submit-button {
-    background-color: #5567e0;
-    color: #ffffff;
+    background-color: #6c63ff;
+    color: #fff;
     border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    width: 100%;
-    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .assistant-form .submit-button:hover {
-    background-color: #4454b8;
+    background-color: #574fd6;
 }
 
 .assistant-form .container {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+/* Button icons */
+.assistant-form .submit-button svg {
+    width: 18px;
+    height: 18px;
+    fill: #fff;
 }

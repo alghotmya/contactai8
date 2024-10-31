@@ -1,0 +1,31 @@
+/* Location: src/styles/GeneralComponents.css */
+
+/* Active Call and Call Controls */
+.call-controls,
+.active-call {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Buttons */
+.call-controls button,
+.active-call button {
+    background-color: #6c63ff;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.call-controls button:hover,
+.active-call button:hover {
+    background-color: #574fd6;
+}

@@ -1,7 +1,6 @@
-// Location: src/components/AssistantForm.js
-
 import React, { useState } from "react";
 import '../styles/AssistantForm.css';
+import { AiOutlineUserAdd } from 'react-icons/ai'; // Importing an icon library
 
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
@@ -13,20 +12,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
   const availableVoices = [
     { name: "Andrew", provider: "azure", voiceId: "andrew" },
     { name: "Brian", provider: "azure", voiceId: "brian" },
-    { name: "Emma", provider: "azure", voiceId: "emma" },
-    { name: "Cartesia", provider: "CartesiaVoice", voiceId: "sonic-english" },
-    { name: "US Female", provider: "google-wavenet", voiceId: "Wavenet-F" },
-    { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" },
-    { name: "Andrea", provider: "11labs", voiceId: "andrea" },
-    { name: "Burt", provider: "11labs", voiceId: "burt" },
-    { name: "Drew", provider: "11labs", voiceId: "drew" },
-    { name: "Joseph", provider: "11labs", voiceId: "joseph" },
-    { name: "Marissa", provider: "11labs", voiceId: "marissa" },
-    { name: "Mark", provider: "11labs", voiceId: "mark" },
-    { name: "Matilda", provider: "11labs", voiceId: "matilda" },
-    { name: "MRB", provider: "11labs", voiceId: "mrb" },
-    { name: "Myra", provider: "11labs", voiceId: "myra" },
-    { name: "Paul", provider: "11labs", voiceId: "paul" }
+    // Add more voices as needed
   ];
 
   const handleSubmit = (e) => {
@@ -40,7 +26,6 @@ const AssistantForm = ({ onAssistantCreated }) => {
         provider: "deepgram",
         model: "nova-2",
         language: language,
-        keywords: []
       },
       model: {
         provider: "openai",
@@ -53,30 +38,22 @@ const AssistantForm = ({ onAssistantCreated }) => {
           }
         ],
         temperature: 0.5,
-        functions: [],
         maxTokens: 200
       },
       voice: {
         provider: selectedVoice.provider,
         voiceId: selectedVoice.voiceId,
-        speed: 1.0
       },
       recordingEnabled: true,
       endCallFunctionEnabled: true,
       dialKeypadFunctionEnabled: false,
       hipaaEnabled: false,
-      clientMessages: [],
-      serverMessages: [],
       silenceTimeoutSeconds: 10,
       responseDelaySeconds: 1,
-      llmRequestDelaySeconds: 0,
       numWordsToInterruptAssistant: 5,
       maxDurationSeconds: 300,
       backgroundSound: "office",
       voicemailDetectionEnabled: true,
-      voicemailMessage: "Please leave a message and we’ll get back to you as soon as possible.",
-      endCallMessage: "Thank you for calling. Have a great day!",
-      endCallPhrases: ["goodbye", "end call", "terminate"]
     };
 
     console.log("Assistant Configuration:", assistantConfig);
@@ -92,6 +69,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder="e.g., John"
           required
         />
       </label>
@@ -102,6 +80,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
           type="text"
           value={welcomeMessage}
           onChange={(e) => setWelcomeMessage(e.target.value)}
+          placeholder="e.g., Hello, how can I assist you?"
           required
         />
       </label>
@@ -111,7 +90,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
         <textarea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
-          placeholder="e.g., You are a friendly customer support assistant. Greet the user warmly."
+          placeholder="e.g., You are a friendly customer support assistant."
           rows="3"
         />
       </label>
@@ -137,10 +116,13 @@ const AssistantForm = ({ onAssistantCreated }) => {
           type="text"
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
+          placeholder="e.g., en-US"
         />
       </label>
 
-      <button type="submit" className="submit-button">Create Assistant</button>
+      <button type="submit" className="submit-button">
+        <AiOutlineUserAdd /> Create Assistant
+      </button>
     </form>
   );
 };
