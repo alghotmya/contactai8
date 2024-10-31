@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Vapi from "@vapi-ai/web";
+import '../styles/GeneralComponents.css';
 
 const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
   const [isCallActive, setIsCallActive] = useState(false);
