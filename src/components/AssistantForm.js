@@ -1,8 +1,12 @@
+// Location: src/components/AssistantForm.js
+
 import React, { useState } from "react";
+import '../styles/AssistantForm.css';
 
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [instruction, setInstruction] = useState("");
   const [voice, setVoice] = useState("andrew");
   const [language, setLanguage] = useState("en-US");
 
@@ -12,7 +16,18 @@ const AssistantForm = ({ onAssistantCreated }) => {
     { name: "Emma", provider: "azure", voiceId: "emma" },
     { name: "Cartesia", provider: "CartesiaVoice", voiceId: "sonic-english" },
     { name: "US Female", provider: "google-wavenet", voiceId: "Wavenet-F" },
-    { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" }
+    { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" },
+    // Eleven Labs Voices
+    { name: "Andrea", provider: "11labs", voiceId: "andrea" },
+    { name: "Burt", provider: "11labs", voiceId: "burt" },
+    { name: "Drew", provider: "11labs", voiceId: "drew" },
+    { name: "Joseph", provider: "11labs", voiceId: "joseph" },
+    { name: "Marissa", provider: "11labs", voiceId: "marissa" },
+    { name: "Mark", provider: "11labs", voiceId: "mark" },
+    { name: "Matilda", provider: "11labs", voiceId: "matilda" },
+    { name: "MRB", provider: "11labs", voiceId: "mrb" },
+    { name: "Myra", provider: "11labs", voiceId: "myra" },
+    { name: "Paul", provider: "11labs", voiceId: "paul" },
   ];
 
   const handleSubmit = (e) => {
@@ -22,6 +37,14 @@ const AssistantForm = ({ onAssistantCreated }) => {
     const assistantConfig = {
       name,
       firstMessage: welcomeMessage,
+      model: {
+        messages: [
+          {
+            role: "system",
+            content: instruction || "say hi to the user" // Default instruction
+          }
+        ]
+      },
       transcriber: { provider: "deepgram", model: "nova-2", language },
       voice: {
         provider: selectedVoice.provider,
@@ -61,6 +84,16 @@ const AssistantForm = ({ onAssistantCreated }) => {
       </label>
 
       <label>
+        Instruction:
+        <input
+          type="text"
+          value={instruction}
+          onChange={(e) => setInstruction(e.target.value)}
+          placeholder="e.g., Say hi to the user"
+        />
+      </label>
+
+      <label>
         Voice:
         <select
           value={voice}
@@ -84,7 +117,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
         />
       </label>
 
-      <button type="submit">Create Assistant</button>
+      <button type="submit" className="submit-button">Create Assistant</button>
     </form>
   );
 };
