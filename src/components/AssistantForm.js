@@ -44,8 +44,8 @@ const AssistantForm = ({ onAssistantCreated }) => {
       },
       model: {
         provider: "openai",
-        model: "gpt-4-turbo", // Use a valid fallback model
-        fallbackModels: ["gpt-4-turbo"], // Valid fallback model
+        model: "gpt-4-turbo",
+        fallbackModels: ["gpt-4-turbo"],
         messages: [
           {
             role: "system",
@@ -61,7 +61,6 @@ const AssistantForm = ({ onAssistantCreated }) => {
         voiceId: selectedVoice.voiceId,
         speed: 1.0
       },
-      forwardingPhoneNumber: "+11234567890", // Valid E.164 format number
       recordingEnabled: true,
       endCallFunctionEnabled: true,
       dialKeypadFunctionEnabled: false,
