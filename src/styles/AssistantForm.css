@@ -2,29 +2,30 @@
 
 .assistant-form {
     background-color: #f5f7fa;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    padding: 15px; /* Reduced padding */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     color: #333;
     width: 100%;
-    max-width: 500px;
+    max-width: 500px; /* Reduced max-width */
     margin: auto;
     font-family: 'Roboto', sans-serif;
 }
 
 .assistant-form label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 4px; /* Reduced margin */
     font-weight: 600;
     color: #4a4a4a;
+    font-size: 14px; /* Reduced font size */
 }
 
 .assistant-form input, 
 .assistant-form select, 
 .assistant-form textarea {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 8px; /* Reduced padding */
+    margin-bottom: 10px; /* Reduced margin */
     border: 1px solid #ddd;
     border-radius: 5px;
     background-color: #fff;
@@ -43,14 +44,15 @@
 .assistant-form input::placeholder, 
 .assistant-form textarea::placeholder {
     color: #aaa;
+    font-size: 13px; /* Reduced font size */
 }
 
 .assistant-form .submit-button {
     background-color: #6c63ff;
     color: #fff;
     border: none;
-    padding: 10px 15px;
-    font-size: 14px;
+    padding: 8px 12px; /* Reduced padding */
+    font-size: 14px; /* Reduced font size */
     font-weight: 600;
     border-radius: 5px;
     cursor: pointer;
@@ -68,12 +70,5 @@
 .assistant-form .container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-/* Button icons */
-.assistant-form .submit-button svg {
-    width: 18px;
-    height: 18px;
-    fill: #fff;
+    gap: 8px; /* Reduced gap between form fields */
 }
