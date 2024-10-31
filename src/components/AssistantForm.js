@@ -1,5 +1,3 @@
-// Location: src/components/AssistantForm.js
-
 import React, { useState } from "react";
 import '../styles/AssistantForm.css';
 
@@ -37,13 +35,13 @@ const AssistantForm = ({ onAssistantCreated }) => {
       name,
       firstMessage: welcomeMessage,
       transcriber: {
-        provider: "example_transcription_service",
-        model: "example_model",
+        provider: "deepgram", // Use an allowed value here
+        model: "nova-2",
         language: language,
         keywords: []
       },
       model: {
-        provider: "example_ai_model_provider",
+        provider: "openai", // Use an allowed model provider
         model: "gpt-4",
         fallbackModels: ["gpt-3.5"],
         messages: [
@@ -61,19 +59,19 @@ const AssistantForm = ({ onAssistantCreated }) => {
         voiceId: selectedVoice.voiceId,
         speed: 1.0
       },
-      forwardingPhoneNumber: "+1234567890",
+      forwardingPhoneNumber: "+1234567890", // Ensure this is in E.164 format
       recordingEnabled: true,
       endCallFunctionEnabled: true,
       dialKeypadFunctionEnabled: false,
       hipaaEnabled: false,
       clientMessages: [],
       serverMessages: [],
-      silenceTimeoutSeconds: 3,
+      silenceTimeoutSeconds: 10, // Must be 10 or higher
       responseDelaySeconds: 1,
       llmRequestDelaySeconds: 0,
       numWordsToInterruptAssistant: 5,
       maxDurationSeconds: 300,
-      backgroundSound: "office_ambient.mp3",
+      backgroundSound: "office", // Set to an allowed value
       voicemailDetectionEnabled: true,
       voicemailMessage: "Please leave a message and we’ll get back to you as soon as possible.",
       endCallMessage: "Thank you for calling. Have a great day!",
