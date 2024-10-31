@@ -6,7 +6,7 @@ import '../styles/AssistantForm.css';
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState("");
-  const [instruction, setInstruction] = useState("");
+  const [instruction, setInstruction] = useState(""); // Field for the assistant's instruction
   const [voice, setVoice] = useState("andrew");
   const [language, setLanguage] = useState("en-US");
 
@@ -17,7 +17,6 @@ const AssistantForm = ({ onAssistantCreated }) => {
     { name: "Cartesia", provider: "CartesiaVoice", voiceId: "sonic-english" },
     { name: "US Female", provider: "google-wavenet", voiceId: "Wavenet-F" },
     { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" },
-    // Eleven Labs Voices
     { name: "Andrea", provider: "11labs", voiceId: "andrea" },
     { name: "Burt", provider: "11labs", voiceId: "burt" },
     { name: "Drew", provider: "11labs", voiceId: "drew" },
@@ -27,7 +26,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
     { name: "Matilda", provider: "11labs", voiceId: "matilda" },
     { name: "MRB", provider: "11labs", voiceId: "mrb" },
     { name: "Myra", provider: "11labs", voiceId: "myra" },
-    { name: "Paul", provider: "11labs", voiceId: "paul" },
+    { name: "Paul", provider: "11labs", voiceId: "paul" }
   ];
 
   const handleSubmit = (e) => {
@@ -37,25 +36,47 @@ const AssistantForm = ({ onAssistantCreated }) => {
     const assistantConfig = {
       name,
       firstMessage: welcomeMessage,
+      transcriber: {
+        provider: "deepgram",
+        model: "nova-2",
+        language
+      },
       model: {
+        provider: "example_ai_model_provider",
+        model: "gpt-4",
+        fallbackModels: ["gpt-3.5"],
         messages: [
           {
             role: "system",
-            content: instruction || "say hi to the user" // Default instruction
+            content: instruction || "You are a friendly customer support assistant. Say hi to the user." // Default instruction if none provided
           }
-        ]
+        ],
+        temperature: 0.5,
+        functions: [],
+        maxTokens: 200
       },
-      transcriber: { provider: "deepgram", model: "nova-2", language },
       voice: {
         provider: selectedVoice.provider,
         voiceId: selectedVoice.voiceId,
-        speed: 1.0,
-        chunkPlan: {
-          enabled: true,
-          minCharacters: 30,
-          punctuationBoundaries: [".", "?", "!"],
-        },
+        speed: 1.0
       },
+      forwardingPhoneNumber: "+1234567890",
+      recordingEnabled: true,
+      endCallFunctionEnabled: true,
+      dialKeypadFunctionEnabled: false,
+      hipaaEnabled: false,
+      clientMessages: [],
+      serverMessages: [],
+      silenceTimeoutSeconds: 3,
+      responseDelaySeconds: 1,
+      llmRequestDelaySeconds: 0,
+      numWordsToInterruptAssistant: 5,
+      maxDurationSeconds: 300,
+      backgroundSound: "office_ambient.mp3",
+      voicemailDetectionEnabled: true,
+      voicemailMessage: "Thank you for calling. Please leave a message and we’ll get back to you as soon as possible.",
+      endCallMessage: "Thank you for calling. Have a great day!",
+      endCallPhrases: ["goodbye", "end call", "terminate"]
     };
 
     onAssistantCreated(assistantConfig);
@@ -85,11 +106,11 @@ const AssistantForm = ({ onAssistantCreated }) => {
 
       <label>
         Instruction:
-        <input
-          type="text"
+        <textarea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
-          placeholder="e.g., Say hi to the user"
+          placeholder="e.g., You are a friendly customer support assistant. Greet the user warmly."
+          rows="3"
         />
       </label>
 
