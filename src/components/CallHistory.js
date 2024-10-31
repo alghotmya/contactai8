@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SidebarMenu from './SidebarMenu';
-import './CallHistory.css';
+import '../styles/CallHistory.css';
 
 const CallHistory = () => {
   const [callHistory, setCallHistory] = useState([]);
