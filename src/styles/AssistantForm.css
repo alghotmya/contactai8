@@ -19,7 +19,8 @@
 }
 
 .assistant-form input, 
-.assistant-form select {
+.assistant-form select, 
+.assistant-form textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -30,7 +31,8 @@
     font-size: 16px;
 }
 
-.assistant-form input::placeholder {
+.assistant-form input::placeholder, 
+.assistant-form textarea::placeholder {
     color: #9ea7c2;
 }
 

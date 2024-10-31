@@ -1,12 +1,12 @@
 // Location: src/components/AssistantForm.js
 
 import React, { useState } from "react";
-import '../styles/AssistantForm.css';
+import './AssistantForm.css';
 
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState("");
-  const [instruction, setInstruction] = useState(""); // Field for the assistant's instruction
+  const [instruction, setInstruction] = useState(""); // Custom instruction field for assistant
   const [voice, setVoice] = useState("andrew");
   const [language, setLanguage] = useState("en-US");
 
@@ -37,9 +37,10 @@ const AssistantForm = ({ onAssistantCreated }) => {
       name,
       firstMessage: welcomeMessage,
       transcriber: {
-        provider: "deepgram",
-        model: "nova-2",
-        language
+        provider: "example_transcription_service",
+        model: "example_model",
+        language: language,
+        keywords: []
       },
       model: {
         provider: "example_ai_model_provider",
@@ -48,7 +49,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
         messages: [
           {
             role: "system",
-            content: instruction || "You are a friendly customer support assistant. Say hi to the user." // Default instruction if none provided
+            content: instruction || "You are a friendly customer support assistant. Say hi to the user."
           }
         ],
         temperature: 0.5,
@@ -74,7 +75,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
       maxDurationSeconds: 300,
       backgroundSound: "office_ambient.mp3",
       voicemailDetectionEnabled: true,
-      voicemailMessage: "Thank you for calling. Please leave a message and we’ll get back to you as soon as possible.",
+      voicemailMessage: "Please leave a message and we’ll get back to you as soon as possible.",
       endCallMessage: "Thank you for calling. Have a great day!",
       endCallPhrases: ["goodbye", "end call", "terminate"]
     };
