@@ -1,3 +1,5 @@
+// Location: src/components/AssistantForm.js
+
 import React, { useState } from "react";
 import '../styles/AssistantForm.css';
 
@@ -35,15 +37,15 @@ const AssistantForm = ({ onAssistantCreated }) => {
       name,
       firstMessage: welcomeMessage,
       transcriber: {
-        provider: "deepgram", // Use an allowed value here
+        provider: "deepgram",
         model: "nova-2",
         language: language,
         keywords: []
       },
       model: {
-        provider: "openai", // Use an allowed model provider
+        provider: "openai",
         model: "gpt-4",
-        fallbackModels: ["gpt-3.5"],
+        fallbackModels: ["gpt-4-0-realtime-preview-2024-10-01"], // Valid fallback model
         messages: [
           {
             role: "system",
@@ -59,24 +61,26 @@ const AssistantForm = ({ onAssistantCreated }) => {
         voiceId: selectedVoice.voiceId,
         speed: 1.0
       },
-      forwardingPhoneNumber: "+1234567890", // Ensure this is in E.164 format
+      forwardingPhoneNumber: "+1234567890", // Valid E.164 format number
       recordingEnabled: true,
       endCallFunctionEnabled: true,
       dialKeypadFunctionEnabled: false,
       hipaaEnabled: false,
       clientMessages: [],
       serverMessages: [],
-      silenceTimeoutSeconds: 10, // Must be 10 or higher
+      silenceTimeoutSeconds: 10,
       responseDelaySeconds: 1,
       llmRequestDelaySeconds: 0,
       numWordsToInterruptAssistant: 5,
       maxDurationSeconds: 300,
-      backgroundSound: "office", // Set to an allowed value
+      backgroundSound: "office",
       voicemailDetectionEnabled: true,
       voicemailMessage: "Please leave a message and we’ll get back to you as soon as possible.",
       endCallMessage: "Thank you for calling. Have a great day!",
       endCallPhrases: ["goodbye", "end call", "terminate"]
     };
+
+    console.log("Assistant Configuration:", assistantConfig);
 
     onAssistantCreated(assistantConfig);
   };
