@@ -1,7 +1,7 @@
 // Location: src/components/AssistantForm.js
 
 import React, { useState } from "react";
-import './AssistantForm.css';
+import '../styles/AssistantForm.css';
 
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
