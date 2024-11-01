@@ -1,4 +1,7 @@
+// Location: src/components/AssistantList.js
+
 import React from "react";
+import '../styles/GeneralComponents.css';
 
 const AssistantList = ({ assistants, onSelectAssistant }) => {
   return (

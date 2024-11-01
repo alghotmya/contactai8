@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import Vapi from "@vapi-ai/web";  // Use local Vapi instance
-import '../styles/GeneralComponents.css';
+// Location: src/components/ActiveCall.js
 
+import React, { useState, useEffect } from "react";
+import Vapi from "@vapi-ai/web";
+import '../styles/GeneralComponents.css';
 
 const ActiveCall = ({ assistant }) => {
   const [volumeLevel, setVolumeLevel] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
-    const vapiInstance = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);  // Create a new Vapi instance
+    const vapiInstance = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
 
-    // Event listeners for this assistant's call
     const handleVolumeLevel = (volume) => setVolumeLevel(volume);
     const handleSpeechStart = () => setIsSpeaking(true);
     const handleSpeechEnd = () => setIsSpeaking(false);
@@ -19,13 +19,12 @@ const ActiveCall = ({ assistant }) => {
     vapiInstance.on("speech-start", handleSpeechStart);
     vapiInstance.on("speech-end", handleSpeechEnd);
 
-    // Cleanup function
     return () => {
       vapiInstance.off("volume-level", handleVolumeLevel);
       vapiInstance.off("speech-start", handleSpeechStart);
       vapiInstance.off("speech-end", handleSpeechEnd);
     };
-  }, [assistant]);  // Re-run the effect when the assistant changes
+  }, [assistant]);
 
   return (
     <div>

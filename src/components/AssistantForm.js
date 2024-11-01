@@ -10,6 +10,8 @@ const AssistantForm = ({ onAssistantCreated }) => {
   const [instruction, setInstruction] = useState("");
   const [voice, setVoice] = useState("andrew");
   const [language, setLanguage] = useState("en-US");
+  const [maxDuration, setMaxDuration] = useState(600); // Added field for max duration
+  const [responseDelay, setResponseDelay] = useState(2); // Added field for response delay
 
   const availableVoices = [
     { name: "Andrew", provider: "azure", voiceId: "andrew" },
@@ -36,11 +38,12 @@ const AssistantForm = ({ onAssistantCreated }) => {
         messages: [
           {
             role: "system",
-            content: instruction || "You are a friendly customer support assistant. Say hi to the user."
+            content: instruction || "You are a friendly customer support assistant that retains context and remembers user interactions for seamless support."
           }
         ],
         temperature: 0.5,
-        maxTokens: 200
+        maxTokens: 500, // Adjusted for longer context handling
+        semanticCachingEnabled: true // Ensures the assistant retains context
       },
       voice: {
         provider: selectedVoice.provider,
@@ -51,11 +54,12 @@ const AssistantForm = ({ onAssistantCreated }) => {
       dialKeypadFunctionEnabled: false,
       hipaaEnabled: false,
       silenceTimeoutSeconds: 10,
-      responseDelaySeconds: 1,
+      responseDelaySeconds: responseDelay,
       numWordsToInterruptAssistant: 5,
-      maxDurationSeconds: 300,
+      maxDurationSeconds: maxDuration,
       backgroundSound: "office",
       voicemailDetectionEnabled: true,
+      persistent: true // Indicates the assistant is set to be permanent
     };
 
     console.log("Assistant Configuration:", assistantConfig);
@@ -92,8 +96,8 @@ const AssistantForm = ({ onAssistantCreated }) => {
         <textarea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
-          placeholder="e.g., You are a friendly customer support assistant."
-          rows="2" /* Reduced height */
+          placeholder="e.g., You are a friendly customer support assistant that remembers past conversations."
+          rows="2"
         />
       </label>
 
@@ -119,6 +123,26 @@ const AssistantForm = ({ onAssistantCreated }) => {
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
           placeholder="e.g., en-US"
+        />
+      </label>
+
+      <label>
+        Max Call Duration (seconds):
+        <input
+          type="number"
+          value={maxDuration}
+          onChange={(e) => setMaxDuration(parseInt(e.target.value))}
+          placeholder="e.g., 600"
+        />
+      </label>
+
+      <label>
+        Response Delay (seconds):
+        <input
+          type="number"
+          value={responseDelay}
+          onChange={(e) => setResponseDelay(parseInt(e.target.value))}
+          placeholder="e.g., 2"
         />
       </label>
 
