@@ -1,3 +1,5 @@
+// Location: src/components/CallControls.js
+
 import React, { useState, useEffect, useRef } from "react";
 import Vapi from "@vapi-ai/web";
 
@@ -8,7 +10,6 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
   useEffect(() => {
     vapiInstanceRef.current = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
 
-    // Initialize Vapi SDK and set up event listeners
     vapiInstanceRef.current.on('speech-start', () => {
       console.log('Speech has started');
     });
@@ -19,13 +20,13 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
 
     vapiInstanceRef.current.on('call-start', () => {
       console.log('Call has started');
-      onCallStarted(); // Notify parent component
+      onCallStarted();
     });
 
     vapiInstanceRef.current.on('call-end', () => {
       console.log('Call has ended');
       setIsCallActive(false);
-      onCallEnded(); // Notify parent component
+      onCallEnded();
     });
 
     vapiInstanceRef.current.on('volume-level', (volume) => {
@@ -39,7 +40,7 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
     vapiInstanceRef.current.on('error', (e) => {
       console.error('An error occurred:', e);
     });
-  }, [onCallStarted, onCallEnded]); // Include the functions as dependencies
+  }, [onCallStarted, onCallEnded]);
 
   const handleStartCall = () => {
     if (isCallActive) return;
