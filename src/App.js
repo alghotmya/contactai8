@@ -7,6 +7,7 @@ import CallHistory from './components/CallHistory'; // Import Call History compo
 import Settings from './components/Settings';
 import AuthHandler from './components/AuthHandler';
 import SignOut from './components/SignOut';
+import ParentComponent from './components/ParentComponent'; // Import the new ParentComponent
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/call-history" element={<CallHistory />} /> {/* Call History Page */}
         <Route path="/settings" element={<Settings />} />
         <Route path="/signout" element={<SignOut />} />
+        <Route path="/test-call" element={<ParentComponent />} /> {/* Route for testing the call */}
       </Routes>
     </Router>
   );
