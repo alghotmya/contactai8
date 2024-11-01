@@ -58,8 +58,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
       numWordsToInterruptAssistant: 5,
       maxDurationSeconds: maxDuration,
       backgroundSound: "office",
-      voicemailDetectionEnabled: true,
-      persistent: true // Indicates the assistant is set to be permanent
+      voicemailDetectionEnabled: true
     };
 
     console.log("Assistant Configuration:", assistantConfig);
