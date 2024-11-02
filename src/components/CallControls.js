@@ -3,13 +3,13 @@ import Vapi from "@vapi-ai/web";
 
 const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
   const [isCallActive, setIsCallActive] = useState(false);
-  const vapiInstanceRef = useRef(null); // Store the Vapi instance
+  const vapiInstanceRef = useRef(null); // Use a ref to store the Vapi instance
 
+  // Initialize the Vapi instance once
   useEffect(() => {
-    // Create and initialize the Vapi instance
     vapiInstanceRef.current = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
 
-    // Log useful events
+    // Event listeners for logging
     vapiInstanceRef.current.on("volume-level", (volume) => {
       console.log(`Volume Level: ${volume}`);
     });
@@ -37,7 +37,7 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
     vapiInstanceRef.current.on("error", (e) => {
       console.error("An error occurred:", e);
       if (e.response) {
-        console.error("Detailed error response:", e.response);
+        console.error("Detailed error response:", JSON.stringify(e.response, null, 2));
       }
     });
 
@@ -58,18 +58,40 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
       return;
     }
 
-    // Log the assistant configuration before starting the call
-    console.log("Starting call with assistant configuration:", JSON.stringify(assistant, null, 2));
+    // Minimal assistant configuration for testing
+    const minimalAssistantConfig = {
+      name: assistant.name,
+      firstMessage: assistant.firstMessage || "Hello!",
+      transcriber: {
+        provider: "deepgram",
+        model: "nova-2",
+        language: "en-US",
+      },
+      model: {
+        provider: "openai",
+        model: "gpt-4-turbo",
+        fallbackModels: ["gpt-4-turbo"],
+        messages: [
+          {
+            role: "system",
+            content: "You are a friendly customer support assistant that retains context and remembers user interactions for seamless support."
+          }
+        ],
+      },
+    };
+
+    // Log the minimal payload for debugging
+    console.log("Starting call with minimal assistant configuration:", JSON.stringify(minimalAssistantConfig, null, 2));
 
     vapiInstanceRef.current
-      .start(assistant)
+      .start(minimalAssistantConfig)
       .then(() => {
         console.log("Call started with assistant:", assistant.name);
       })
       .catch((error) => {
         console.error("Error starting call with assistant:", assistant.name, error);
         if (error.response) {
-          console.error("Detailed error response:", error.response);
+          console.error("Detailed error response:", JSON.stringify(error.response, null, 2));
         }
       });
   };
@@ -89,6 +111,16 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
       console.error("Error stopping the call:", err);
     }
   };
+
+  // Cleanup if the component unmounts during an active call
+  useEffect(() => {
+    return () => {
+      if (isCallActive) {
+        vapiInstanceRef.current.stop();
+        setIsCallActive(false);
+      }
+    };
+  }, [isCallActive]);
 
   return (
     <div className="call-controls container">
