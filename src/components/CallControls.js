@@ -39,29 +39,45 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
 
     vapiInstanceRef.current.on('error', (e) => {
       console.error('An error occurred:', e);
+      if (e.response) {
+        console.error('Error response details:', e.response);
+      }
     });
   }, [onCallStarted, onCallEnded]);
 
   const handleStartCall = () => {
     if (isCallActive) return;
 
-    vapiInstanceRef.current.start(assistant).then(() => {
-      setIsCallActive(true);
-      console.log('Call started with assistant:', assistant.name);
-    }).catch((error) => {
-      console.error('Error starting call:', error);
-    });
+    // Log the assistant configuration for debugging
+    console.log("Attempting to start call with the following assistant configuration:", JSON.stringify(assistant, null, 2));
+
+    vapiInstanceRef.current.start(assistant)
+      .then(() => {
+        setIsCallActive(true);
+        console.log('Call started with assistant:', assistant.name);
+      })
+      .catch((error) => {
+        console.error('Error starting call:', error);
+        if (error.response) {
+          console.error('Response error details:', error.response);
+        }
+      });
   };
 
   const handleEndCall = () => {
     if (!isCallActive) return;
 
-    vapiInstanceRef.current.stop().then(() => {
-      console.log('Call ended successfully');
-      setIsCallActive(false);
-    }).catch((error) => {
-      console.error('Error ending call:', error);
-    });
+    vapiInstanceRef.current.stop()
+      .then(() => {
+        console.log('Call ended successfully');
+        setIsCallActive(false);
+      })
+      .catch((error) => {
+        console.error('Error ending call:', error);
+        if (error.response) {
+          console.error('Response error details:', error.response);
+        }
+      });
   };
 
   return (
