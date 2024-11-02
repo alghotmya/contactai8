@@ -8,7 +8,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState("");
   const [instruction, setInstruction] = useState("");
-  const [voice, setVoice] = useState("andrew");
+  const [voice, setVoice] = useState(""); // Allow voice to be blank for optional override
   const [language, setLanguage] = useState("en-US");
   const [maxDuration, setMaxDuration] = useState(600); // Field for max duration
   const [responseDelay, setResponseDelay] = useState(2); // Field for response delay
@@ -32,7 +32,11 @@ const AssistantForm = ({ onAssistantCreated }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const selectedVoice = availableVoices.find((v) => v.voiceId === voice);
+
+    // Check if voice is provided; if not, do not include voice configuration
+    const selectedVoice = voice
+      ? availableVoices.find((v) => v.voiceId === voice)
+      : null;
 
     const assistantConfig = {
       name,
@@ -57,13 +61,16 @@ const AssistantForm = ({ onAssistantCreated }) => {
         semanticCachingEnabled: true,
         emotionRecognition: emotionRecognition,
       },
-      voice: {
-        provider: selectedVoice.provider,
-        voiceId: selectedVoice.voiceId,
-        chunkPlan: chunkPlan,
-        fillerInjection: fillerInjection,
-        speed: 1.0, // Can be customized if needed
-      },
+      // Only include the voice section if selectedVoice exists
+      ...(selectedVoice && {
+        voice: {
+          provider: selectedVoice.provider,
+          voiceId: selectedVoice.voiceId,
+          chunkPlan: chunkPlan,
+          fillerInjection: fillerInjection,
+          speed: 1.0,
+        }
+      }),
       callBehavior: {
         firstMessageMode: "standard",
         hipaaEnabled: hipaaEnabled,
@@ -73,7 +80,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
         backchannelingEnabled: backchanneling,
       },
       transportConfigurations: {
-        transportPlan: "default", // Placeholder for future customization
+        transportPlan: "default",
       },
       messagePlan: messagePlan,
       artifactPlan: artifactPlan,
@@ -89,6 +96,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
 
     console.log("Assistant Configuration:", assistantConfig);
 
+    // Ensure the config matches the API's expected format
     onAssistantCreated(assistantConfig);
   };
 
@@ -127,12 +135,12 @@ const AssistantForm = ({ onAssistantCreated }) => {
       </label>
 
       <label>
-        Voice:
+        Voice (Optional):
         <select
           value={voice}
           onChange={(e) => setVoice(e.target.value)}
-          required
         >
+          <option value="">Default</option>
           {availableVoices.map((v) => (
             <option key={v.voiceId} value={v.voiceId}>
               {v.name} ({v.provider})
