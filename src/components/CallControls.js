@@ -1,36 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
 import Vapi from "@vapi-ai/web";
+import CallModal from "./CallModal"; // Import the CallModal component
 
 const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
   const [isCallActive, setIsCallActive] = useState(false);
-  const vapiInstanceRef = useRef(null); // Use a ref to store the Vapi instance
+  const [showModal, setShowModal] = useState(false);
+  const [volumeLevel, setVolumeLevel] = useState(0);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const vapiInstanceRef = useRef(null);
 
-  // Initialize the Vapi instance once
   useEffect(() => {
     vapiInstanceRef.current = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
 
-    // Event listeners for logging
     vapiInstanceRef.current.on("volume-level", (volume) => {
-      console.log(`Volume Level: ${volume}`);
+      setVolumeLevel(volume);
     });
 
     vapiInstanceRef.current.on("speech-start", () => {
-      console.log("Speech has started.");
+      setIsSpeaking(true);
     });
 
     vapiInstanceRef.current.on("speech-end", () => {
-      console.log("Speech has ended.");
+      setIsSpeaking(false);
     });
 
     vapiInstanceRef.current.on("call-start", () => {
       console.log("Call has started.");
       setIsCallActive(true);
+      setShowModal(true); // Show the modal when the call starts
       onCallStarted();
     });
 
     vapiInstanceRef.current.on("call-end", () => {
       console.log("Call has ended.");
       setIsCallActive(false);
+      setShowModal(false); // Hide the modal when the call ends
       onCallEnded();
     });
 
@@ -42,7 +46,6 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
     });
 
     return () => {
-      // Cleanup event listeners on unmount
       vapiInstanceRef.current.off("volume-level");
       vapiInstanceRef.current.off("speech-start");
       vapiInstanceRef.current.off("speech-end");
@@ -58,7 +61,6 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
       return;
     }
 
-    // Minimal assistant configuration for testing
     const minimalAssistantConfig = {
       name: assistant.name,
       firstMessage: assistant.firstMessage || "Hello!",
@@ -80,7 +82,6 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
       },
     };
 
-    // Log the minimal payload for debugging
     console.log("Starting call with minimal assistant configuration:", JSON.stringify(minimalAssistantConfig, null, 2));
 
     vapiInstanceRef.current
@@ -106,21 +107,12 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
       vapiInstanceRef.current.stop();
       console.log("Call ended successfully.");
       setIsCallActive(false);
+      setShowModal(false); // Hide the modal when the call ends
       onCallEnded();
     } catch (err) {
       console.error("Error stopping the call:", err);
     }
   };
-
-  // Cleanup if the component unmounts during an active call
-  useEffect(() => {
-    return () => {
-      if (isCallActive) {
-        vapiInstanceRef.current.stop();
-        setIsCallActive(false);
-      }
-    };
-  }, [isCallActive]);
 
   return (
     <div className="call-controls container">
@@ -130,6 +122,12 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
       <button onClick={handleEndCall} disabled={!isCallActive}>
         End Call
       </button>
+      <CallModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        volumeLevel={volumeLevel}
+        isSpeaking={isSpeaking}
+      />
     </div>
   );
 };
