@@ -1,7 +1,7 @@
 // Location: src/components/CallModal.js
 
 import React from "react";
-import "./CallModal.css"; // Create a CSS file for styling the modal
+import "../styles/CallModal.css"; // Create a CSS file for styling the modal
 
 const CallModal = ({ isOpen, onClose, volumeLevel, isSpeaking }) => {
   if (!isOpen) return null;
