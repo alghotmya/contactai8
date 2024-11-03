@@ -39,7 +39,7 @@ When fetching the API or booking the appointment, do not use the same phrase eve
 "Just a second, I’ll finalize that for you..."
 Make sure the startTime is in the proper ISO 8601 format (e.g., YYYY-MM-DDTHH:MM) before sending the booking request.
 
-Always use the email "alghotmya@gmail.com" in the booking request. Do not ask the caller for their email address.
+Always use the email "alghotmya@gmail.com" in  the booking request. Do not ask the caller for their email address.
 
 Example responses to handle past dates:
 
