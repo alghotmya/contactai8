@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Vapi from "@vapi-ai/web";
 
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
@@ -39,7 +40,7 @@ When fetching the API or booking the appointment, do not use the same phrase eve
 "Just a second, I’ll finalize that for you..."
 Make sure the startTime is in the proper ISO 8601 format (e.g., YYYY-MM-DDTHH:MM) before sending the booking request.
 
-Always use the email "alghotmya@gmail.com" in  the booking request. Do not ask the caller for their email address.
+Always use the email "alghotmya@gmail.com" in the booking request. Do not ask the caller for their email address.
 
 Example responses to handle past dates:
 
@@ -108,31 +109,19 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
       await onAssistantCreated(assistantConfig);
       console.log("Assistant created successfully:", assistantConfig);
 
-      // Automatically send the PATCH request to update the system prompt
-      const response = await fetch(`https://api.vapi.ai/assistant/${assistantConfig.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.REACT_APP_VAPI_AUTH_TOKEN}` // Ensure this token is set in your environment
-        },
-        body: JSON.stringify({
-          model: {
-            messages: [
-              {
-                content: instruction,
-                role: "system"
-              }
-            ]
-          }
-        })
+      // Send the new system message using vapi.send()
+      const vapi = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
+      vapi.send({
+        type: "add-message",
+        message: {
+          role: "system",
+          content: instruction // Send the updated system prompt content
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to update the system prompt: ${response.statusText}`);
-      }
-      console.log("System prompt updated successfully");
+      console.log("System prompt message sent successfully");
     } catch (err) {
-      console.error("Error creating or updating assistant:", err);
+      console.error("Error creating assistant or sending system prompt message:", err);
     }
   };
 
