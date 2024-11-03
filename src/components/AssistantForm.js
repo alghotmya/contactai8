@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-const AssistantForm = ({ onAssistantUpdated }) => {
-  const [name, setName] = useState("");
-  const [welcomeMessage, setWelcomeMessage] = useState("");
-  const [voice, setVoice] = useState("andrew");
-  const [language, setLanguage] = useState("en-US");
+const AssistantForm = ({ onAssistantCreated }) => {
+  const [name, setName] = useState(""); // Leave blank to use the default from the persistent assistant
+  const [welcomeMessage, setWelcomeMessage] = useState(""); // Leave blank to use the default from the persistent assistant
+  const [voice, setVoice] = useState(""); // Leave blank to use the default from the persistent assistant
+  const [language, setLanguage] = useState(""); // Leave blank to use the default from the persistent assistant
   const [instruction, setInstruction] = useState(
     `You are a voice assistant for Termain's Dental, responsible for booking appointments. VAPI provides default variables that help you manage the current time and date seamlessly. When a caller asks to book an appointment, follow these steps to ensure the booking is valid:
 
@@ -67,16 +67,16 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const selectedVoice = availableVoices.find(v => v.voiceId === voice);
+    const selectedVoice = availableVoices.find(v => v.voiceId === voice) || {};
 
     const assistantConfig = {
-      id: "6be70999-50ec-4d33-a028-64e2887a871c", // Use your persistent assistant ID
-      name,
-      firstMessage: welcomeMessage,
+      id: "6be70999-50ec-4d33-a028-64e2887a871c", // Reference the persistent assistant
+      name: name || undefined, // Use provided name or default from persistent assistant
+      firstMessage: welcomeMessage || undefined, // Use provided message or default
       transcriber: {
         provider: "deepgram",
         model: "nova-2",
-        language,
+        language: language || "en-US", // Use provided language or default
       },
       model: {
         provider: "openai",
@@ -91,8 +91,8 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728" // Link the tool by default
       },
       voice: {
-        provider: selectedVoice.provider,
-        voiceId: selectedVoice.voiceId,
+        provider: selectedVoice.provider || "azure", // Use selected or default
+        voiceId: selectedVoice.voiceId || "andrew", // Use selected or default
         speed: 1.0,
         chunkPlan: {
           enabled: true,
@@ -102,45 +102,45 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
       },
     };
 
-    console.log("Updating assistant configuration payload:", assistantConfig);
+    console.log("Creating assistant with configuration:", assistantConfig);
 
     try {
-      onAssistantUpdated(assistantConfig);
-      console.log("Assistant updated successfully:", assistantConfig);
+      onAssistantCreated(assistantConfig);
+      console.log("Assistant created successfully:", assistantConfig);
     } catch (err) {
-      console.error("Error updating assistant:", err);
+      console.error("Error creating assistant:", err);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Assistant Name:
+        Assistant Name (optional):
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          required
+          placeholder="Leave blank to use default"
         />
       </label>
 
       <label>
-        Welcome Message:
+        Welcome Message (optional):
         <input
           type="text"
           value={welcomeMessage}
           onChange={(e) => setWelcomeMessage(e.target.value)}
-          required
+          placeholder="Leave blank to use default"
         />
       </label>
 
       <label>
-        Voice:
+        Voice (optional):
         <select
           value={voice}
           onChange={(e) => setVoice(e.target.value)}
-          required
         >
+          <option value="">Default Voice</option>
           {availableVoices.map((v) => (
             <option key={v.voiceId} value={v.voiceId}>
               {v.name} ({v.provider})
@@ -150,16 +150,17 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
       </label>
 
       <label>
-        Language:
+        Language (optional):
         <input
           type="text"
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
+          placeholder="Leave blank to use default"
         />
       </label>
 
       <label>
-        System Prompt:
+        System Prompt (editable):
         <textarea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
@@ -167,7 +168,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         />
       </label>
 
-      <button type="submit">Update Assistant</button>
+      <button type="submit">Create Assistant</button>
     </form>
   );
 };
