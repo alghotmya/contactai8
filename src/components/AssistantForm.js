@@ -71,7 +71,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
     const selectedVoice = availableVoices.find(v => v.voiceId === voice) || {};
 
     const assistantConfig = {
-      id: "6be70999-50ec-4d33-a028-64e2887a871c", // Reference the persistent assistant
+      id: "6be70999-50ec-4d33-a028-64e2887a871c", // Reference the persistent assistant ID
       name: name || undefined,
       firstMessage: welcomeMessage || undefined,
       transcriber: {
@@ -83,12 +83,6 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         provider: "openai",
         model: "gpt-4-turbo",
         fallbackModels: ["gpt-4-turbo"],
-        messages: [
-          {
-            role: "system",
-            content: instruction // Ensure this is included in the initial payload
-          }
-        ],
         linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728"
       },
       voice: {
@@ -101,6 +95,18 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
           punctuationBoundaries: [".", "?", "!"],
         },
       },
+      assistantOverrides: {
+        model: {
+          provider: "openai",
+          model: "gpt-4-turbo",
+          messages: [
+            {
+              role: "system",
+              content: instruction // Use the provided instruction as the system prompt
+            }
+          ]
+        }
+      }
     };
 
     console.log("Creating assistant with configuration:", assistantConfig);
