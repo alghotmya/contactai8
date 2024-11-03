@@ -109,23 +109,11 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
       }
     };
 
-    console.log("Creating assistant with configuration:", assistantConfig);
+    console.log("Creating assistant with configuration:", JSON.stringify(assistantConfig, null, 2));
 
     try {
       await onAssistantCreated(assistantConfig);
-      console.log("Assistant created successfully:", assistantConfig);
-
-      // Send the new system message using vapi.send()
-      const vapi = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
-      vapi.send({
-        type: "add-message",
-        message: {
-          role: "system",
-          content: instruction // Send the updated system prompt content
-        }
-      });
-
-      console.log("System prompt message sent successfully");
+      console.log("Assistant created successfully with updated system prompt:", assistantConfig);
     } catch (err) {
       console.error("Error creating assistant or sending system prompt message:", err);
     }
