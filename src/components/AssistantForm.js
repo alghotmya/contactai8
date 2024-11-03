@@ -68,16 +68,18 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Ensure instruction is not empty and set a default if necessary
-    const defaultInstruction = `Default system prompt if none is provided.`;
-    const finalInstruction = instruction.trim() || defaultInstruction;
+    // Ensure instruction is correctly captured and not empty
+    if (!instruction.trim()) {
+      alert("System prompt (instruction) cannot be empty. Please provide a valid instruction.");
+      return;
+    }
 
-    console.log("Final system prompt being used:", finalInstruction);
+    console.log("Final system prompt being used:", instruction);
 
     const selectedVoice = availableVoices.find(v => v.voiceId === voice) || {};
 
     const assistantConfig = {
-      id: "6be70999-50ec-4d33-a028-64e2887a871c", // Reference the persistent assistant ID
+      id: "6be70999-50ec-4d33-a028-64e2887a871c", // Reference the persistent assistant ID for updating
       name: name || undefined,
       firstMessage: welcomeMessage || undefined,
       transcriber: {
@@ -108,20 +110,20 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
           messages: [
             {
               role: "system",
-              content: finalInstruction // Ensure the system prompt is passed here
+              content: instruction // Ensures the system prompt from the form is used
             }
           ]
         }
       }
     };
 
-    console.log("Creating assistant with configuration:", JSON.stringify(assistantConfig, null, 2));
+    console.log("Creating or updating assistant with configuration:", JSON.stringify(assistantConfig, null, 2));
 
     try {
-      await onAssistantCreated(assistantConfig);
-      console.log("Assistant created successfully with updated system prompt:", assistantConfig);
+      await onAssistantCreated(assistantConfig); // Ensure this is an update or create function
+      console.log("Assistant created or updated successfully with new system prompt.");
     } catch (err) {
-      console.error("Error creating assistant or sending system prompt message:", err);
+      console.error("Error creating or updating assistant:", err);
     }
   };
 
