@@ -1,42 +1,73 @@
-// Location: src/components/AssistantForm.js
-
 import React, { useState } from "react";
-import '../styles/AssistantForm.css';
-import { AiOutlineUserAdd } from 'react-icons/ai'; // Importing an icon
 
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState("");
-  const [instruction, setInstruction] = useState("");
-  const [voice, setVoice] = useState(""); // Allow voice to be blank for optional override
+  const [voice, setVoice] = useState("andrew");
   const [language, setLanguage] = useState("en-US");
-  const [maxDuration, setMaxDuration] = useState(600); // Field for max duration
-  const [responseDelay, setResponseDelay] = useState(2); // Field for response delay
-  const [silenceTimeout, setSilenceTimeout] = useState(10);
-  const [emotionRecognition, setEmotionRecognition] = useState(false);
-  const [backgroundSound, setBackgroundSound] = useState("office");
-  const [hipaaEnabled, setHipaaEnabled] = useState(false);
-  const [fillerInjection, setFillerInjection] = useState(false);
-  const [chunkPlan, setChunkPlan] = useState("default");
-  const [backchanneling, setBackchanneling] = useState(false);
-  const [artifactPlan, setArtifactPlan] = useState("basic");
-  const [messagePlan, setMessagePlan] = useState("standard");
-  const [monitorPlan, setMonitorPlan] = useState("default");
-  const [credentialId, setCredentialId] = useState("");
+  const [instruction, setInstruction] = useState(
+    `You are a voice assistant for Termain's Dental, responsible for booking appointments. VAPI provides default variables that help you manage the current time and date seamlessly. When a caller asks to book an appointment, follow these steps to ensure the booking is valid:
+
+Ask for the caller's name by saying, "What’s your name?" or "What name should I set for the appointment?"
+
+Use VAPI’s default variables to handle the current date and time:
+
+{{now}}: Current date and time
+{{date}}: Current date
+{{time}}: Current time
+{{month}}: Current month
+{{day}}: Current day of the month
+{{year}}: Current year
+Ask for the desired startTime for the appointment:
+
+Automatically interpret relative time phrases such as "tomorrow," "next Monday," or "in 5 days" by referencing the {{now}}, {{date}}, {{day}}, and {{month}} variables.
+Convert these relative terms into the correct future date. For example:
+"Tomorrow" would add 1 day to {{date}}.
+"Next Monday" calculates the next occurrence of Monday based on {{now}}.
+"5 days from now" would add 5 days to {{date}}.
+Ensure the time provided is always in the future:
+
+If the time provided is in the past, respond with something like, "Umm… that time has already passed. Could you provide a future time for your appointment?"
+Use the {{now}} variable to verify that the requested date is in the future.
+Always assume the current year (using the {{year}} variable) unless the caller explicitly mentions a different year.
+When fetching the API or booking the appointment, do not use the same phrase every time (e.g., "This will take a sec"). Instead, vary your response with casual, friendly phrases such as:
+
+"Let me take care of that for you, one moment..."
+"I’ll just lock that in for you, hang tight..."
+"Great! Let me confirm that real quick..."
+"I’m on it, this should just take a moment..."
+"Just a second, I’ll finalize that for you..."
+Make sure the startTime is in the proper ISO 8601 format (e.g., YYYY-MM-DDTHH:MM) before sending the booking request.
+
+Always use the email "alghotmya@gmail.com" in the booking request. Do not ask the caller for their email address.
+
+Example responses to handle past dates:
+
+If the caller says "Yesterday at 10 AM," respond with, "That time has already passed. Could you provide a future time for your appointment?"
+If the caller provides a valid future date, proceed with booking.
+Once all the required details are gathered, send the booking request in this format:
+
+{
+  "startTime": "YYYY-MM-DDTHH:MM:SSZ",
+  "attendeeName": "John Doe",
+  "attendeeEmail": "alghotmya@gmail.com"
+}
+Make sure the startTime is in the correct ISO 8601 format before sending the booking request. Always provide responses that make the caller feel comfortable and excited to book their appointment.`
+  );
 
   const availableVoices = [
     { name: "Andrew", provider: "azure", voiceId: "andrew" },
     { name: "Brian", provider: "azure", voiceId: "brian" },
-    // Add more voices as needed
+    { name: "Emma", provider: "azure", voiceId: "emma" },
+    { name: "Cartesia", provider: "CartesiaVoice", voiceId: "sonic-english" },
+    { name: "US Female", provider: "google-wavenet", voiceId: "Wavenet-F" },
+    { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" }
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if voice is provided; if not, do not include voice configuration
-    const selectedVoice = voice
-      ? availableVoices.find((v) => v.voiceId === voice)
-      : null;
+    const selectedVoice = availableVoices.find(v => v.voiceId === voice);
 
     const assistantConfig = {
       name,
@@ -44,7 +75,7 @@ const AssistantForm = ({ onAssistantCreated }) => {
       transcriber: {
         provider: "deepgram",
         model: "nova-2",
-        language: language,
+        language,
       },
       model: {
         provider: "openai",
@@ -53,62 +84,39 @@ const AssistantForm = ({ onAssistantCreated }) => {
         messages: [
           {
             role: "system",
-            content: instruction || "You are a friendly customer support assistant that retains context and remembers user interactions for seamless support."
+            content: instruction
           }
         ],
-        temperature: 0.5,
-        maxTokens: 500,
-        semanticCachingEnabled: true,
-        emotionRecognition: emotionRecognition,
+        linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728" // Link the tool by default
       },
-      // Only include the voice section if selectedVoice exists
-      ...(selectedVoice && {
-        voice: {
-          provider: selectedVoice.provider,
-          voiceId: selectedVoice.voiceId,
-          chunkPlan: chunkPlan,
-          fillerInjection: fillerInjection,
-          speed: 1.0,
-        }
-      }),
-      callBehavior: {
-        firstMessageMode: "standard",
-        hipaaEnabled: hipaaEnabled,
-        silenceTimeoutSeconds: silenceTimeout,
-        maxDurationSeconds: maxDuration,
-        backgroundSound: backgroundSound,
-        backchannelingEnabled: backchanneling,
+      voice: {
+        provider: selectedVoice.provider,
+        voiceId: selectedVoice.voiceId,
+        speed: 1.0,
+        chunkPlan: {
+          enabled: true,
+          minCharacters: 30,
+          punctuationBoundaries: [".", "?", "!"],
+        },
       },
-      transportConfigurations: {
-        transportPlan: "default",
-      },
-      messagePlan: messagePlan,
-      artifactPlan: artifactPlan,
-      monitorPlan: monitorPlan,
-      credentialId: credentialId,
-      responseDelaySeconds: responseDelay,
-      recordingEnabled: true,
-      endCallFunctionEnabled: true,
-      voicemailDetectionEnabled: true,
-      dialKeypadFunctionEnabled: false,
-      numWordsToInterruptAssistant: 5,
     };
 
-    console.log("Assistant Configuration:", assistantConfig);
-
-    // Ensure the config matches the API's expected format
-    onAssistantCreated(assistantConfig);
+    try {
+      onAssistantCreated(assistantConfig);
+      console.log("Assistant created successfully:", assistantConfig);
+    } catch (err) {
+      console.error("Error creating assistant:", err);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="assistant-form container">
+    <form onSubmit={handleSubmit}>
       <label>
         Assistant Name:
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g., John"
           required
         />
       </label>
@@ -119,28 +127,17 @@ const AssistantForm = ({ onAssistantCreated }) => {
           type="text"
           value={welcomeMessage}
           onChange={(e) => setWelcomeMessage(e.target.value)}
-          placeholder="e.g., Hello, how can I assist you?"
           required
         />
       </label>
 
       <label>
-        Instruction:
-        <textarea
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
-          placeholder="e.g., You are a friendly customer support assistant that remembers past conversations."
-          rows="2"
-        />
-      </label>
-
-      <label>
-        Voice (Optional):
+        Voice:
         <select
           value={voice}
           onChange={(e) => setVoice(e.target.value)}
+          required
         >
-          <option value="">Default</option>
           {availableVoices.map((v) => (
             <option key={v.voiceId} value={v.voiceId}>
               {v.name} ({v.provider})
@@ -155,121 +152,10 @@ const AssistantForm = ({ onAssistantCreated }) => {
           type="text"
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          placeholder="e.g., en-US"
         />
       </label>
 
-      <label>
-        Max Call Duration (seconds):
-        <input
-          type="number"
-          value={maxDuration}
-          onChange={(e) => setMaxDuration(parseInt(e.target.value))}
-          placeholder="e.g., 600"
-        />
-      </label>
-
-      <label>
-        Response Delay (seconds):
-        <input
-          type="number"
-          value={responseDelay}
-          onChange={(e) => setResponseDelay(parseInt(e.target.value))}
-          placeholder="e.g., 2"
-        />
-      </label>
-
-      <label>
-        Silence Timeout (seconds):
-        <input
-          type="number"
-          value={silenceTimeout}
-          onChange={(e) => setSilenceTimeout(parseInt(e.target.value))}
-          placeholder="e.g., 10"
-        />
-      </label>
-
-      <label>
-        Enable HIPAA Compliance:
-        <input
-          type="checkbox"
-          checked={hipaaEnabled}
-          onChange={(e) => setHipaaEnabled(e.target.checked)}
-        />
-      </label>
-
-      <label>
-        Enable Emotion Recognition:
-        <input
-          type="checkbox"
-          checked={emotionRecognition}
-          onChange={(e) => setEmotionRecognition(e.target.checked)}
-        />
-      </label>
-
-      <label>
-        Background Sound:
-        <input
-          type="text"
-          value={backgroundSound}
-          onChange={(e) => setBackgroundSound(e.target.value)}
-          placeholder="e.g., office"
-        />
-      </label>
-
-      <label>
-        Chunk Plan:
-        <input
-          type="text"
-          value={chunkPlan}
-          onChange={(e) => setChunkPlan(e.target.value)}
-          placeholder="e.g., default"
-        />
-      </label>
-
-      <label>
-        Artifact Plan:
-        <input
-          type="text"
-          value={artifactPlan}
-          onChange={(e) => setArtifactPlan(e.target.value)}
-          placeholder="e.g., basic"
-        />
-      </label>
-
-      <label>
-        Message Plan:
-        <input
-          type="text"
-          value={messagePlan}
-          onChange={(e) => setMessagePlan(e.target.value)}
-          placeholder="e.g., standard"
-        />
-      </label>
-
-      <label>
-        Monitor Plan:
-        <input
-          type="text"
-          value={monitorPlan}
-          onChange={(e) => setMonitorPlan(e.target.value)}
-          placeholder="e.g., default"
-        />
-      </label>
-
-      <label>
-        Credential ID:
-        <input
-          type="text"
-          value={credentialId}
-          onChange={(e) => setCredentialId(e.target.value)}
-          placeholder="e.g., your-credential-id"
-        />
-      </label>
-
-      <button type="submit" className="submit-button">
-        <AiOutlineUserAdd /> Create Assistant
-      </button>
+      <button type="submit">Create Assistant</button>
     </form>
   );
 };
