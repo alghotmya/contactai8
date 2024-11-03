@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const AssistantForm = ({ onAssistantCreated }) => {
+const AssistantForm = ({ onAssistantUpdated }) => {
   const [name, setName] = useState("");
   const [welcomeMessage, setWelcomeMessage] = useState("");
   const [voice, setVoice] = useState("andrew");
@@ -70,6 +70,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
     const selectedVoice = availableVoices.find(v => v.voiceId === voice);
 
     const assistantConfig = {
+      id: "6be70999-50ec-4d33-a028-64e2887a871c", // Use your persistent assistant ID
       name,
       firstMessage: welcomeMessage,
       transcriber: {
@@ -84,7 +85,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         messages: [
           {
             role: "system",
-            content: instruction // Ensure this matches what you intend to send
+            content: instruction // Editable and overrideable by the user
           }
         ],
         linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728" // Link the tool by default
@@ -101,13 +102,13 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
       },
     };
 
-    console.log("Final assistant configuration payload:", assistantConfig);
+    console.log("Updating assistant configuration payload:", assistantConfig);
 
     try {
-      onAssistantCreated(assistantConfig);
-      console.log("Assistant created successfully:", assistantConfig);
+      onAssistantUpdated(assistantConfig);
+      console.log("Assistant updated successfully:", assistantConfig);
     } catch (err) {
-      console.error("Error creating assistant:", err);
+      console.error("Error updating assistant:", err);
     }
   };
 
@@ -166,7 +167,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         />
       </label>
 
-      <button type="submit">Create Assistant</button>
+      <button type="submit">Update Assistant</button>
     </form>
   );
 };
