@@ -108,12 +108,12 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
       await onAssistantCreated(assistantConfig);
       console.log("Assistant created successfully:", assistantConfig);
 
-      // Patch request to update the system prompt
+      // Automatically send the PATCH request to update the system prompt
       const response = await fetch(`https://api.vapi.ai/assistant/${assistantConfig.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.REACT_APP_VAPI_AUTH_TOKEN}` // Make sure this token is set in your environment
+          "Authorization": `Bearer ${process.env.REACT_APP_VAPI_AUTH_TOKEN}` // Ensure this token is set in your environment
         },
         body: JSON.stringify({
           model: {
