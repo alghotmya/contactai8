@@ -85,7 +85,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         messages: [
           {
             role: "system",
-            content: instruction
+            content: instruction // Ensure this is included in the initial payload
           }
         ],
         linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728"
