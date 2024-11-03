@@ -32,7 +32,7 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
     });
 
     vapiInstanceRef.current.on("call-end", () => {
-      console.log("Call has ended.");
+      console.log("Call has ended..");
       setIsCallActive(false);
       setShowModal(false); // Hide the modal when the call ends
       onCallEnded();
