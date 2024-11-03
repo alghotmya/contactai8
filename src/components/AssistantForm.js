@@ -68,6 +68,12 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Ensure instruction is not empty and set a default if necessary
+    const defaultInstruction = `Default system prompt if none is provided.`;
+    const finalInstruction = instruction.trim() || defaultInstruction;
+
+    console.log("Final system prompt being used:", finalInstruction);
+
     const selectedVoice = availableVoices.find(v => v.voiceId === voice) || {};
 
     const assistantConfig = {
@@ -102,7 +108,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
           messages: [
             {
               role: "system",
-              content: instruction // Use the provided instruction as the system prompt
+              content: finalInstruction // Ensure the system prompt is passed here
             }
           ]
         }
