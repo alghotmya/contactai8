@@ -84,7 +84,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         messages: [
           {
             role: "system",
-            content: instruction
+            content: instruction // Ensure this matches what you intend to send
           }
         ],
         linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728" // Link the tool by default
@@ -100,6 +100,8 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         },
       },
     };
+
+    console.log("Final assistant configuration payload:", assistantConfig);
 
     try {
       onAssistantCreated(assistantConfig);
