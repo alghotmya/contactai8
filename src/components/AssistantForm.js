@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
 const AssistantForm = ({ onAssistantCreated }) => {
-  const [name, setName] = useState(""); // Leave blank to use the default from the persistent assistant
-  const [welcomeMessage, setWelcomeMessage] = useState(""); // Leave blank to use the default from the persistent assistant
-  const [voice, setVoice] = useState(""); // Leave blank to use the default from the persistent assistant
-  const [language, setLanguage] = useState(""); // Leave blank to use the default from the persistent assistant
+  const [name, setName] = useState("");
+  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [voice, setVoice] = useState("andrew");
+  const [language, setLanguage] = useState("en-US");
   const [instruction, setInstruction] = useState(
     `You are a voice assistant for Termain's Dental, responsible for booking appointments. VAPI provides default variables that help you manage the current time and date seamlessly. When a caller asks to book an appointment, follow these steps to ensure the booking is valid:
 
@@ -71,12 +71,12 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
 
     const assistantConfig = {
       id: "6be70999-50ec-4d33-a028-64e2887a871c", // Reference the persistent assistant
-      name: name || undefined, // Use provided name or default from persistent assistant
-      firstMessage: welcomeMessage || undefined, // Use provided message or default
+      name: name || undefined,
+      firstMessage: welcomeMessage || undefined,
       transcriber: {
         provider: "deepgram",
         model: "nova-2",
-        language: language || "en-US", // Use provided language or default
+        language: language || "en-US",
       },
       model: {
         provider: "openai",
@@ -85,14 +85,14 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         messages: [
           {
             role: "system",
-            content: instruction // Editable and overrideable by the user
+            content: instruction
           }
         ],
-        linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728" // Link the tool by default
+        linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728"
       },
       voice: {
-        provider: selectedVoice.provider || "azure", // Use selected or default
-        voiceId: selectedVoice.voiceId || "andrew", // Use selected or default
+        provider: selectedVoice.provider || "azure",
+        voiceId: selectedVoice.voiceId || "andrew",
         speed: 1.0,
         chunkPlan: {
           enabled: true,
@@ -105,10 +105,34 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
     console.log("Creating assistant with configuration:", assistantConfig);
 
     try {
-      onAssistantCreated(assistantConfig);
+      await onAssistantCreated(assistantConfig);
       console.log("Assistant created successfully:", assistantConfig);
+
+      // Patch request to update the system prompt
+      const response = await fetch(`https://api.vapi.ai/assistant/${assistantConfig.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.REACT_APP_VAPI_AUTH_TOKEN}` // Make sure this token is set in your environment
+        },
+        body: JSON.stringify({
+          model: {
+            messages: [
+              {
+                content: instruction,
+                role: "system"
+              }
+            ]
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update the system prompt: ${response.statusText}`);
+      }
+      console.log("System prompt updated successfully");
     } catch (err) {
-      console.error("Error creating assistant:", err);
+      console.error("Error creating or updating assistant:", err);
     }
   };
 
@@ -168,7 +192,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         />
       </label>
 
-      <button type="submit">Create Assistant</button>
+      <button type="submit">Create and Update Assistant</button>
     </form>
   );
 };
