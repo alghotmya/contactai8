@@ -155,6 +155,15 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         />
       </label>
 
+      <label>
+        System Prompt:
+        <textarea
+          value={instruction}
+          onChange={(e) => setInstruction(e.target.value)}
+          rows="10"
+        />
+      </label>
+
       <button type="submit">Create Assistant</button>
     </form>
   );
