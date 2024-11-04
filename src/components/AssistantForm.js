@@ -91,7 +91,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         provider: "openai",
         model: "gpt-4-turbo",
         fallbackModels: ["gpt-4-turbo"],
-        linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728"
+        linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728" // Ensure the tool ID is linked
       },
       voice: {
         provider: selectedVoice.provider || "azure",
