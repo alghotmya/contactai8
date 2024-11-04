@@ -10,50 +10,23 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
   const vapiInstanceRef = useRef(null);
 
   useEffect(() => {
-    vapiInstanceRef.current = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
+    const vapiInstance = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
+    vapiInstanceRef.current = vapiInstance;
 
-    vapiInstanceRef.current.on("volume-level", (volume) => {
-      setVolumeLevel(volume);
-    });
+    const handleVolumeLevel = (volume) => setVolumeLevel(volume);
+    const handleSpeechStart = () => setIsSpeaking(true);
+    const handleSpeechEnd = () => setIsSpeaking(false);
 
-    vapiInstanceRef.current.on("speech-start", () => {
-      setIsSpeaking(true);
-    });
-
-    vapiInstanceRef.current.on("speech-end", () => {
-      setIsSpeaking(false);
-    });
-
-    vapiInstanceRef.current.on("call-start", () => {
-      console.log("Call has started.");
-      setIsCallActive(true);
-      setShowModal(true); // Show the modal when the call starts
-      onCallStarted();
-    });
-
-    vapiInstanceRef.current.on("call-end", () => {
-      console.log("Call has ended..");
-      setIsCallActive(false);
-      setShowModal(false); // Hide the modal when the call ends
-      onCallEnded();
-    });
-
-    vapiInstanceRef.current.on("error", (e) => {
-      console.error("An error occurred:", e);
-      if (e.response) {
-        console.error("Detailed error response:", JSON.stringify(e.response, null, 2));
-      }
-    });
+    vapiInstance.on("volume-level", handleVolumeLevel);
+    vapiInstance.on("speech-start", handleSpeechStart);
+    vapiInstance.on("speech-end", handleSpeechEnd);
 
     return () => {
-      vapiInstanceRef.current.off("volume-level");
-      vapiInstanceRef.current.off("speech-start");
-      vapiInstanceRef.current.off("speech-end");
-      vapiInstanceRef.current.off("call-start");
-      vapiInstanceRef.current.off("call-end");
-      vapiInstanceRef.current.off("error");
+      if (handleVolumeLevel) vapiInstance.off("volume-level", handleVolumeLevel);
+      if (handleSpeechStart) vapiInstance.off("speech-start", handleSpeechStart);
+      if (handleSpeechEnd) vapiInstance.off("speech-end", handleSpeechEnd);
     };
-  }, [onCallStarted, onCallEnded]);
+  }, []);
 
   const handleStartCall = () => {
     if (isCallActive) {
@@ -62,7 +35,6 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
     }
 
     const minimalAssistantConfig = {
-      name: assistant.name,
       firstMessage: assistant.firstMessage || "Hello!",
       transcriber: {
         provider: "deepgram",
@@ -76,7 +48,8 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
         messages: [
           {
             role: "system",
-            content: "You are a friendly customer support assistant that retains context and remembers user interactions for seamless support."
+            content: assistant?.assistantOverrides?.model?.messages?.[0]?.content || 
+                     "Default system prompt."
           }
         ],
       },
@@ -88,12 +61,12 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
       .start(minimalAssistantConfig)
       .then(() => {
         console.log("Call started with assistant:", assistant.name);
+        setIsCallActive(true);
+        setShowModal(true); // Show the modal when the call starts
+        if (onCallStarted) onCallStarted(); // Ensure function exists before calling
       })
       .catch((error) => {
-        console.error("Error starting call with assistant:", assistant.name, error);
-        if (error.response) {
-          console.error("Detailed error response:", JSON.stringify(error.response, null, 2));
-        }
+        console.error("Error starting call with assistant:", error);
       });
   };
 
@@ -108,7 +81,7 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
       console.log("Call ended successfully.");
       setIsCallActive(false);
       setShowModal(false); // Hide the modal when the call ends
-      onCallEnded();
+      if (onCallEnded) onCallEnded(); // Ensure function exists before calling
     } catch (err) {
       console.error("Error stopping the call:", err);
     }
@@ -117,7 +90,7 @@ const CallControls = ({ assistant, onCallStarted, onCallEnded }) => {
   return (
     <div className="call-controls container">
       <button onClick={handleStartCall} disabled={isCallActive}>
-        Start Call with {assistant.name}
+        Start Call with {assistant?.name || "the Assistant"}
       </button>
       <button onClick={handleEndCall} disabled={!isCallActive}>
         End Call
