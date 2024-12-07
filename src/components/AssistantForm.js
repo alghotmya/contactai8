@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Vapi from "@vapi-ai/web";
+import axios from "axios";
 
 const AssistantForm = ({ onAssistantCreated }) => {
   const [name, setName] = useState("");
@@ -68,15 +68,11 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!instruction.trim()) {
-      alert("System prompt (instruction) cannot be empty");
-      return;
-    }
-
     const selectedVoice = availableVoices.find(v => v.voiceId === voice) || {};
 
     const bookingTool = {
-      type: "function",
+      type: "output",
+      id: "2a3a77fe-436b-4710-8af1-50b852f5b728",
       function: {
         name: "Booking",
         description: "Book an appointment",
@@ -98,11 +94,15 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
           },
           required: ["startTime", "attendeeName", "attendeeEmail"]
         }
+      },
+      async: false,
+      server: {
+        url: process.env.REACT_APP_LAMBDA_URL,
+        timeoutSeconds: 30
       }
     };
 
     const assistantConfig = {
-      id: "6be70999-50ec-4d33-a028-64e2887a871c",
       name: name || undefined,
       firstMessage: welcomeMessage || undefined,
       transcriber: {
@@ -114,8 +114,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         provider: "openai",
         model: "gpt-4-turbo",
         fallbackModels: ["gpt-4-turbo"],
-        tools: [bookingTool],
-        linkedToolId: "2a3a77fe-436b-4710-8af1-50b852f5b728"
+        tools: [bookingTool]
       },
       voice: {
         provider: selectedVoice.provider || "azure",
@@ -143,10 +142,24 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
     };
 
     try {
-      await onAssistantCreated(assistantConfig);
-      console.log("Assistant created successfully");
+      const response = await axios.post(
+        'https://api.vapi.ai/assistant',
+        assistantConfig,
+        {
+          headers: {
+            'Authorization': `Bearer ${process.env.REACT_APP_VAPI_PRIVATE_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      console.log("Assistant created:", response.data);
+      
+      if (onAssistantCreated) {
+        onAssistantCreated(response.data);
+      }
     } catch (err) {
-      console.error("Error creating assistant:", err);
+      console.error("Error creating assistant:", err.response?.data || err.message);
     }
   };
 
