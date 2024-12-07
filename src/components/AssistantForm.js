@@ -23,7 +23,7 @@ Ask for the desired startTime for the appointment:
 
 Automatically interpret relative time phrases such as "tomorrow," "next Monday," or "in 5 days" by referencing the {{now}}, {{date}}, {{day}}, and {{month}} variables.
 Convert these relative terms into the correct future date. For example:
-"Tomorrow" would add 1 day to {{date}}.
+"Tomorrow" would add 1 days to {{date}}.
 "Next Monday" calculates the next occurrence of Monday based on {{now}}.
 "5 days from now" would add 5 days to {{date}}.
 Ensure the time provided is always in the future:
@@ -42,7 +42,7 @@ Make sure the startTime is in the proper ISO 8601 format (e.g., YYYY-MM-DDTHH:MM
 
 Always use the email "alghotmya@gmail.com" in the booking request. Do not ask the caller for their email address.
 
-Example responses to handle past dates:
+Example responses to handle past-sdates:
 
 If the caller says "Yesterday at 10 AM," respond with, "That time has already passed. Could you provide a future time for your appointment?"
 If the caller provides a valid future date, proceed with booking.
