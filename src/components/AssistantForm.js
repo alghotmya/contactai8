@@ -2,14 +2,28 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const AssistantForm = ({ onAssistantCreated }) => {
-  // ... keep all the useState declarations and availableVoices array ...
+  const [assistantName, setAssistantName] = useState(""); // Changed from 'name' to 'assistantName'
+  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [selectedVoice, setSelectedVoice] = useState("andrew");
+  const [language, setLanguage] = useState("en-US");
+  const [instruction, setInstruction] = useState(
+    `You are a voice assistant for Termain's Dental...` // Your full prompt here
+  );
+
+  const availableVoices = [
+    { name: "Andrew", provider: "azure", voiceId: "andrew" },
+    { name: "Brian", provider: "azure", voiceId: "brian" },
+    { name: "Emma", provider: "azure", voiceId: "emma" },
+    { name: "Cartesia", provider: "CartesiaVoice", voiceId: "sonic-english" },
+    { name: "US Female", provider: "google-wavenet", voiceId: "Wavenet-F" },
+    { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" }
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const selectedVoice = availableVoices.find(v => v.voiceId === voice) || {};
+    const currentVoice = availableVoices.find(v => v.voiceId === selectedVoice) || {};
 
-    // Tool definition matches VAPI's expected format
     const toolDefinition = {
       name: "Booking",
       description: "Book an appointment",
@@ -33,7 +47,6 @@ const AssistantForm = ({ onAssistantCreated }) => {
       }
     };
 
-    // Structure the assistant configuration according to VAPI's API spec
     const assistantConfig = {
       firstMessage: welcomeMessage || "Hello! I'm here to help you book an appointment.",
       transcriber: {
@@ -42,8 +55,8 @@ const AssistantForm = ({ onAssistantCreated }) => {
         language: language || "en-US"
       },
       voice: {
-        provider: selectedVoice.provider || "azure",
-        voiceId: selectedVoice.voiceId || "andrew"
+        provider: currentVoice.provider || "azure",
+        voiceId: currentVoice.voiceId || "andrew"
       },
       model: {
         provider: "openai",
@@ -63,9 +76,9 @@ const AssistantForm = ({ onAssistantCreated }) => {
       }
     };
 
-    // Add name if provided
-    if (name) {
-      assistantConfig.name = name;
+    // Add assistant name if provided
+    if (assistantName) {
+      assistantConfig.name = assistantName;
     }
 
     try {
@@ -100,8 +113,8 @@ const AssistantForm = ({ onAssistantCreated }) => {
           Assistant Name (optional):
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={assistantName}
+            onChange={(e) => setAssistantName(e.target.value)}
             placeholder="Leave blank to use default"
             className="form-control"
           />
@@ -125,8 +138,8 @@ const AssistantForm = ({ onAssistantCreated }) => {
         <label>
           Voice:
           <select
-            value={voice}
-            onChange={(e) => setVoice(e.target.value)}
+            value={selectedVoice}
+            onChange={(e) => setSelectedVoice(e.target.value)}
             className="form-control"
           >
             {availableVoices.map((v) => (
