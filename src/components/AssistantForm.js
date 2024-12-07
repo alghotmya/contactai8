@@ -2,146 +2,75 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const AssistantForm = ({ onAssistantCreated }) => {
-  const [name, setName] = useState("");
-  const [welcomeMessage, setWelcomeMessage] = useState("");
-  const [voice, setVoice] = useState("andrew");
-  const [language, setLanguage] = useState("en-US");
-  const [instruction, setInstruction] = useState(
-    `You are a voice assistant for Termain's Dental, responsible for booking appointments. VAPI provides default variables that help you manage the current time and date seamlessly. When a caller asks to book an appointment, follow these steps to ensure the booking is valid:
-
-Ask for the caller's name by saying, "What's your name?" or "What name should I set for the appointment?"
-
-Use VAPI's default variables to handle the current date and time:
-
-{{now}}: Current date and time
-{{date}}: Current date
-{{time}}: Current time
-{{month}}: Current month
-{{day}}: Current day of the month
-{{year}}: Current year
-Ask for the desired startTime for the appointment:
-
-Automatically interpret relative time phrases such as "tomorrow," "next Monday," or "in 5 days" by referencing the {{now}}, {{date}}, {{day}}, and {{month}} variables.
-Convert these relative terms into the correct future date. For example:
-"Tomorrow" would add 1 day to {{date}}.
-"Next Monday" calculates the next occurrence of Monday based on {{now}}.
-"5 days from now" would add 5 days to {{date}}.
-Ensure the time provided is always in the future:
-
-If the time provided is in the past, respond with something like, "Umm… that time has already passed. Could you provide a future time for your appointment?"
-Use the {{now}} variable to verify that the requested date is in the future.
-Always assume the current year (using the {{year}} variable) unless the caller explicitly mentions a different year.
-When fetching the API or booking the appointment, do not use the same phrase every time (e.g., "This will take a sec"). Instead, vary your response with casual, friendly phrases such as:
-
-"Let me take care of that for you, one moment..."
-"I'll just lock that in for you, hang tight..."
-"Great! Let me confirm that real quick..."
-"I'm on it, this should just take a moment..."
-"Just a second, I'll finalize that for you..."
-Make sure the startTime is in the proper ISO 8601 format (e.g., YYYY-MM-DDTHH:MM) before sending the booking request.
-
-Always use the email "alghotmya@gmail.com" in the booking request. Do not ask the caller for their email address.
-
-Example responses to handle past dates:
-
-If the caller says "Yesterday at 10 AM," respond with, "That time has already passed. Could you provide a future time for your appointment?"
-If the caller provides a valid future date, proceed with booking.
-Once all the required details are gathered, send the booking request in this format:
-
-{
-  "startTime": "YYYY-MM-DDTHH:MM:SSZ",
-  "attendeeName": "John Doe",
-  "attendeeEmail": "alghotmya@gmail.com"
-}
-Make sure the startTime is in the correct ISO 8601 format before sending the booking request. Always provide responses that make the caller feel comfortable and excited to book their appointment.`
-  );
-
-  const availableVoices = [
-    { name: "Andrew", provider: "azure", voiceId: "andrew" },
-    { name: "Brian", provider: "azure", voiceId: "brian" },
-    { name: "Emma", provider: "azure", voiceId: "emma" },
-    { name: "Cartesia", provider: "CartesiaVoice", voiceId: "sonic-english" },
-    { name: "US Female", provider: "google-wavenet", voiceId: "Wavenet-F" },
-    { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" }
-  ];
+  // ... keep all the useState declarations and availableVoices array ...
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const selectedVoice = availableVoices.find(v => v.voiceId === voice) || {};
 
-    const bookingTool = {
-      type: "output",
-      id: "2a3a77fe-436b-4710-8af1-50b852f5b728",
-      function: {
-        name: "Booking",
-        description: "Book an appointment",
-        parameters: {
-          type: "object",
-          properties: {
-            startTime: {
-              type: "string",
-              description: "Start time of the appointment in ISO format"
-            },
-            attendeeName: {
-              type: "string",
-              description: "Name of the attendee"
-            },
-            attendeeEmail: {
-              type: "string",
-              description: "Email of the attendee"
-            }
+    // Tool definition matches VAPI's expected format
+    const toolDefinition = {
+      name: "Booking",
+      description: "Book an appointment",
+      parameters: {
+        type: "object",
+        properties: {
+          startTime: {
+            type: "string",
+            description: "Start time of the appointment in ISO format"
           },
-          required: ["startTime", "attendeeName", "attendeeEmail"]
-        }
-      },
-      async: false,
-      server: {
-        url: process.env.REACT_APP_LAMBDA_URL,
-        timeoutSeconds: 30
+          attendeeName: {
+            type: "string",
+            description: "Name of the attendee"
+          },
+          attendeeEmail: {
+            type: "string",
+            description: "Email of the attendee"
+          }
+        },
+        required: ["startTime", "attendeeName", "attendeeEmail"]
       }
     };
 
+    // Structure the assistant configuration according to VAPI's API spec
     const assistantConfig = {
-      name: name || undefined,
-      firstMessage: welcomeMessage || undefined,
+      firstMessage: welcomeMessage || "Hello! I'm here to help you book an appointment.",
       transcriber: {
         provider: "deepgram",
         model: "nova-2",
-        language: language || "en-US",
+        language: language || "en-US"
+      },
+      voice: {
+        provider: selectedVoice.provider || "azure",
+        voiceId: selectedVoice.voiceId || "andrew"
       },
       model: {
         provider: "openai",
         model: "gpt-4-turbo",
-        fallbackModels: ["gpt-4-turbo"],
-        tools: [bookingTool]
-      },
-      voice: {
-        provider: selectedVoice.provider || "azure",
-        voiceId: selectedVoice.voiceId || "andrew",
-        speed: 1.0,
-        chunkPlan: {
-          enabled: true,
-          minCharacters: 30,
-          punctuationBoundaries: [".", "?", "!"],
-        },
-      },
-      assistantOverrides: {
-        model: {
-          provider: "openai",
-          model: "gpt-4-turbo",
-          messages: [
-            {
-              role: "system",
-              content: instruction
-            }
-          ],
-          tools: [bookingTool]
-        }
+        messages: [
+          {
+            role: "system",
+            content: instruction
+          }
+        ],
+        tools: [
+          {
+            type: "function",
+            function: toolDefinition
+          }
+        ]
       }
     };
 
+    // Add name if provided
+    if (name) {
+      assistantConfig.name = name;
+    }
+
     try {
+      console.log('Sending configuration:', JSON.stringify(assistantConfig, null, 2));
+
       const response = await axios.post(
         'https://api.vapi.ai/assistant',
         assistantConfig,
@@ -153,73 +82,90 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
         }
       );
 
-      console.log("Assistant created:", response.data);
+      console.log('Assistant created successfully:', response.data);
       
       if (onAssistantCreated) {
         onAssistantCreated(response.data);
       }
     } catch (err) {
-      console.error("Error creating assistant:", err.response?.data || err.message);
+      console.error('Error creating assistant:', err.response?.data || err.message);
+      alert('Failed to create assistant: ' + (err.response?.data?.error || err.message));
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Assistant Name (optional):
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Leave blank to use default"
-        />
-      </label>
+    <form onSubmit={handleSubmit} className="assistant-form">
+      <div className="form-group">
+        <label>
+          Assistant Name (optional):
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Leave blank to use default"
+            className="form-control"
+          />
+        </label>
+      </div>
 
-      <label>
-        Welcome Message (optional):
-        <input
-          type="text"
-          value={welcomeMessage}
-          onChange={(e) => setWelcomeMessage(e.target.value)}
-          placeholder="Leave blank to use default"
-        />
-      </label>
+      <div className="form-group">
+        <label>
+          Welcome Message (optional):
+          <input
+            type="text"
+            value={welcomeMessage}
+            onChange={(e) => setWelcomeMessage(e.target.value)}
+            placeholder="Leave blank to use default"
+            className="form-control"
+          />
+        </label>
+      </div>
 
-      <label>
-        Voice (optional):
-        <select
-          value={voice}
-          onChange={(e) => setVoice(e.target.value)}
-        >
-          <option value="">Default Voice</option>
-          {availableVoices.map((v) => (
-            <option key={v.voiceId} value={v.voiceId}>
-              {v.name} ({v.provider})
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="form-group">
+        <label>
+          Voice:
+          <select
+            value={voice}
+            onChange={(e) => setVoice(e.target.value)}
+            className="form-control"
+          >
+            {availableVoices.map((v) => (
+              <option key={v.voiceId} value={v.voiceId}>
+                {v.name} ({v.provider})
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
-      <label>
-        Language (optional):
-        <input
-          type="text"
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          placeholder="Leave blank to use default"
-        />
-      </label>
+      <div className="form-group">
+        <label>
+          Language:
+          <input
+            type="text"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            placeholder="en-US"
+            className="form-control"
+          />
+        </label>
+      </div>
 
-      <label>
-        System Prompt (editable):
-        <textarea
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
-          rows="10"
-        />
-      </label>
+      <div className="form-group">
+        <label>
+          System Prompt:
+          <textarea
+            value={instruction}
+            onChange={(e) => setInstruction(e.target.value)}
+            rows="10"
+            className="form-control"
+          />
+        </label>
+      </div>
 
-      <button type="submit">Create Assistant</button>
+      <button type="submit" className="btn btn-primary">
+        Create Assistant
+      </button>
     </form>
   );
 };
