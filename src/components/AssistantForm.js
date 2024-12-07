@@ -69,7 +69,7 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
     e.preventDefault();
 
     if (!instruction.trim()) {
-      alert("System prompt (instruction) cannot be empty. Please provide a valid instruction.");
+      alert("System prompt (instruction) cannot be empty");
       return;
     }
 
@@ -139,30 +139,12 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
           ],
           tools: [bookingTool]
         }
-      },
-      handlers: {
-        onToolCall: async (toolCall) => {
-          console.log("Tool call received:", toolCall);
-          if (toolCall.function.name === "Booking") {
-            try {
-              const args = JSON.parse(toolCall.function.arguments);
-              console.log("Booking arguments:", args);
-            } catch (err) {
-              console.error("Error parsing tool call arguments:", err);
-            }
-          }
-        },
-        onToolCallResult: (result) => {
-          console.log("Tool call result:", result);
-        }
       }
     };
 
-    console.log("Creating assistant with configuration:", JSON.stringify(assistantConfig, null, 2));
-
     try {
       await onAssistantCreated(assistantConfig);
-      console.log("Assistant created successfully with tool configuration");
+      console.log("Assistant created successfully");
     } catch (err) {
       console.error("Error creating assistant:", err);
     }
@@ -170,7 +152,61 @@ Make sure the startTime is in the correct ISO 8601 format before sending the boo
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* ... rest of your form JSX remains the same ... */}
+      <label>
+        Assistant Name (optional):
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Leave blank to use default"
+        />
+      </label>
+
+      <label>
+        Welcome Message (optional):
+        <input
+          type="text"
+          value={welcomeMessage}
+          onChange={(e) => setWelcomeMessage(e.target.value)}
+          placeholder="Leave blank to use default"
+        />
+      </label>
+
+      <label>
+        Voice (optional):
+        <select
+          value={voice}
+          onChange={(e) => setVoice(e.target.value)}
+        >
+          <option value="">Default Voice</option>
+          {availableVoices.map((v) => (
+            <option key={v.voiceId} value={v.voiceId}>
+              {v.name} ({v.provider})
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label>
+        Language (optional):
+        <input
+          type="text"
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+          placeholder="Leave blank to use default"
+        />
+      </label>
+
+      <label>
+        System Prompt (editable):
+        <textarea
+          value={instruction}
+          onChange={(e) => setInstruction(e.target.value)}
+          rows="10"
+        />
+      </label>
+
+      <button type="submit">Create Assistant</button>
     </form>
   );
 };
