@@ -9,7 +9,6 @@ const AssistantForm = () => {
   const [isCallActive, setIsCallActive] = useState(false);
   const vapiInstanceRef = useRef(null);
 
-  // Mary's assistant ID
   const MARY_ASSISTANT_ID = "6be70999-50ec-4d33-a028-64e2887a871c";
 
   useEffect(() => {
@@ -39,11 +38,9 @@ const AssistantForm = () => {
 
     fetchAssistantConfig();
 
-    // Initialize VAPI instance
     try {
       vapiInstanceRef.current = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
       
-      // Set up event listeners
       vapiInstanceRef.current.on("error", (error) => {
         console.error("VAPI error:", error);
         setError(error.message);
@@ -60,7 +57,6 @@ const AssistantForm = () => {
       setError("Failed to initialize VAPI: " + err.message);
     }
 
-    // Cleanup
     return () => {
       if (vapiInstanceRef.current) {
         try {
@@ -91,20 +87,12 @@ const AssistantForm = () => {
         throw new Error("VAPI not initialized");
       }
 
-      setError(null); // Clear any previous errors
+      setError(null);
       console.log('Starting call with assistant ID:', MARY_ASSISTANT_ID);
 
+      // Using the minimal required configuration for web calls
       await vapiInstanceRef.current.start({
-        assistantId: MARY_ASSISTANT_ID,
-        transcriber: {
-          provider: "deepgram",
-          model: "nova-2",
-          language: "en-US"
-        },
-        model: {
-          provider: "openai",
-          model: "gpt-4-turbo"
-        }
+        assistantId: MARY_ASSISTANT_ID
       });
 
       setIsCallActive(true);
