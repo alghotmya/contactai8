@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Vapi from "@vapi-ai/web";
 
@@ -6,6 +6,8 @@ const AssistantForm = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [assistantConfig, setAssistantConfig] = useState(null);
+  const [isCallActive, setIsCallActive] = useState(false);
+  const vapiInstanceRef = useRef(null);
 
   // Mary's assistant ID
   const MARY_ASSISTANT_ID = "6be70999-50ec-4d33-a028-64e2887a871c";
@@ -36,6 +38,41 @@ const AssistantForm = () => {
     };
 
     fetchAssistantConfig();
+
+    // Initialize VAPI instance
+    try {
+      vapiInstanceRef.current = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
+      
+      // Set up event listeners
+      vapiInstanceRef.current.on("error", (error) => {
+        console.error("VAPI error:", error);
+        setError(error.message);
+        setIsCallActive(false);
+      });
+
+      vapiInstanceRef.current.on("end", () => {
+        console.log("Call ended");
+        setIsCallActive(false);
+      });
+
+    } catch (err) {
+      console.error("Error initializing VAPI:", err);
+      setError("Failed to initialize VAPI: " + err.message);
+    }
+
+    // Cleanup
+    return () => {
+      if (vapiInstanceRef.current) {
+        try {
+          if (isCallActive) {
+            vapiInstanceRef.current.stop();
+          }
+          vapiInstanceRef.current.removeAllListeners();
+        } catch (err) {
+          console.error("Error cleaning up VAPI:", err);
+        }
+      }
+    };
   }, []);
 
   const handleStartCall = async () => {
@@ -44,15 +81,51 @@ const AssistantForm = () => {
       return;
     }
 
+    if (isCallActive) {
+      setError('A call is already in progress');
+      return;
+    }
+
     try {
-      const vapi = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
-      await vapi.start({
-        assistantId: MARY_ASSISTANT_ID
+      if (!vapiInstanceRef.current) {
+        throw new Error("VAPI not initialized");
+      }
+
+      setError(null); // Clear any previous errors
+      console.log('Starting call with assistant ID:', MARY_ASSISTANT_ID);
+
+      await vapiInstanceRef.current.start({
+        assistantId: MARY_ASSISTANT_ID,
+        transcriber: {
+          provider: "deepgram",
+          model: "nova-2",
+          language: "en-US"
+        },
+        model: {
+          provider: "openai",
+          model: "gpt-4-turbo"
+        }
       });
-      console.log('Call started with Mary assistant');
+
+      setIsCallActive(true);
+      console.log('Call started successfully');
     } catch (err) {
       console.error('Error starting call:', err);
-      setError('Failed to start call: ' + err.message);
+      setError('Failed to start call: ' + (err.message || "Unknown error"));
+      setIsCallActive(false);
+    }
+  };
+
+  const handleEndCall = async () => {
+    if (!isCallActive) return;
+
+    try {
+      await vapiInstanceRef.current.stop();
+      setIsCallActive(false);
+      console.log('Call ended successfully');
+    } catch (err) {
+      console.error('Error ending call:', err);
+      setError('Failed to end call: ' + err.message);
     }
   };
 
@@ -82,12 +155,24 @@ const AssistantForm = () => {
             <strong>Model:</strong> {assistantConfig.model?.model}
           </div>
           
-          <button 
-            onClick={handleStartCall}
-            className="start-call-btn"
-          >
-            Start Call with Mary
-          </button>
+          <div className="call-controls">
+            <button 
+              onClick={handleStartCall}
+              className="start-call-btn"
+              disabled={isCallActive}
+            >
+              {isCallActive ? 'Call in Progress...' : 'Start Call with Mary'}
+            </button>
+
+            {isCallActive && (
+              <button 
+                onClick={handleEndCall}
+                className="end-call-btn"
+              >
+                End Call
+              </button>
+            )}
+          </div>
         </>
       )}
     </div>
