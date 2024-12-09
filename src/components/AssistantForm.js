@@ -1,185 +1,96 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Vapi from "@vapi-ai/web";
 
-const AssistantForm = ({ onAssistantCreated }) => {
-  const [assistantName, setAssistantName] = useState(""); // Changed from 'name' to 'assistantName'
-  const [welcomeMessage, setWelcomeMessage] = useState("");
-  const [selectedVoice, setSelectedVoice] = useState("andrew");
-  const [language, setLanguage] = useState("en-US");
-  const [instruction, setInstruction] = useState(
-    `You are a voice assistant for Termain's Dental...` // Your full prompt here
-  );
+const AssistantForm = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [assistantConfig, setAssistantConfig] = useState(null);
 
-  const availableVoices = [
-    { name: "Andrew", provider: "azure", voiceId: "andrew" },
-    { name: "Brian", provider: "azure", voiceId: "brian" },
-    { name: "Emma", provider: "azure", voiceId: "emma" },
-    { name: "Cartesia", provider: "CartesiaVoice", voiceId: "sonic-english" },
-    { name: "US Female", provider: "google-wavenet", voiceId: "Wavenet-F" },
-    { name: "US Male", provider: "google-wavenet", voiceId: "Wavenet-M" }
-  ];
+  // Mary's assistant ID
+  const MARY_ASSISTANT_ID = "6be70999-50ec-4d33-a028-64e2887a871c";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const currentVoice = availableVoices.find(v => v.voiceId === selectedVoice) || {};
-
-    const toolDefinition = {
-      name: "Booking",
-      description: "Book an appointment",
-      parameters: {
-        type: "object",
-        properties: {
-          startTime: {
-            type: "string",
-            description: "Start time of the appointment in ISO format"
-          },
-          attendeeName: {
-            type: "string",
-            description: "Name of the attendee"
-          },
-          attendeeEmail: {
-            type: "string",
-            description: "Email of the attendee"
+  useEffect(() => {
+    const fetchAssistantConfig = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.vapi.ai/assistant/${MARY_ASSISTANT_ID}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${process.env.REACT_APP_VAPI_PRIVATE_KEY}`,
+              'Content-Type': 'application/json'
+            }
           }
-        },
-        required: ["startTime", "attendeeName", "attendeeEmail"]
+        );
+        
+        console.log('Fetched assistant configuration:', response.data);
+        setAssistantConfig(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching assistant:', err);
+        setError('Failed to fetch assistant configuration: ' + 
+          (err.response?.data?.error || err.message));
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    const assistantConfig = {
-      firstMessage: welcomeMessage || "Hello! I'm here to help you book an appointment.",
-      transcriber: {
-        provider: "deepgram",
-        model: "nova-2",
-        language: language || "en-US"
-      },
-      voice: {
-        provider: currentVoice.provider || "azure",
-        voiceId: currentVoice.voiceId || "andrew"
-      },
-      model: {
-        provider: "openai",
-        model: "gpt-4-turbo",
-        messages: [
-          {
-            role: "system",
-            content: instruction
-          }
-        ],
-        tools: [
-          {
-            type: "function",
-            function: toolDefinition
-          }
-        ]
-      }
-    };
+    fetchAssistantConfig();
+  }, []);
 
-    // Add assistant name if provided
-    if (assistantName) {
-      assistantConfig.name = assistantName;
+  const handleStartCall = async () => {
+    if (!assistantConfig) {
+      setError('Assistant configuration not loaded');
+      return;
     }
 
     try {
-      console.log('Sending configuration:', JSON.stringify(assistantConfig, null, 2));
-
-      const response = await axios.post(
-        'https://api.vapi.ai/assistant',
-        assistantConfig,
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.REACT_APP_VAPI_PRIVATE_KEY}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      console.log('Assistant created successfully:', response.data);
-      
-      if (onAssistantCreated) {
-        onAssistantCreated(response.data);
-      }
+      const vapi = new Vapi(process.env.REACT_APP_VAPI_PUBLIC_KEY);
+      await vapi.start({
+        assistantId: MARY_ASSISTANT_ID
+      });
+      console.log('Call started with Mary assistant');
     } catch (err) {
-      console.error('Error creating assistant:', err.response?.data || err.message);
-      alert('Failed to create assistant: ' + (err.response?.data?.error || err.message));
+      console.error('Error starting call:', err);
+      setError('Failed to start call: ' + err.message);
     }
   };
 
+  if (isLoading) {
+    return <div>Loading assistant configuration...</div>;
+  }
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="assistant-form">
-      <div className="form-group">
-        <label>
-          Assistant Name (optional):
-          <input
-            type="text"
-            value={assistantName}
-            onChange={(e) => setAssistantName(e.target.value)}
-            placeholder="Leave blank to use default"
-            className="form-control"
-          />
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label>
-          Welcome Message (optional):
-          <input
-            type="text"
-            value={welcomeMessage}
-            onChange={(e) => setWelcomeMessage(e.target.value)}
-            placeholder="Leave blank to use default"
-            className="form-control"
-          />
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label>
-          Voice:
-          <select
-            value={selectedVoice}
-            onChange={(e) => setSelectedVoice(e.target.value)}
-            className="form-control"
+    <div className="assistant-config">
+      <h2>Assistant Configuration</h2>
+      {assistantConfig && (
+        <>
+          <div className="config-item">
+            <strong>Name:</strong> {assistantConfig.name || 'Mary'}
+          </div>
+          <div className="config-item">
+            <strong>First Message:</strong> {assistantConfig.firstMessage}
+          </div>
+          <div className="config-item">
+            <strong>Voice Provider:</strong> {assistantConfig.voice?.provider}
+          </div>
+          <div className="config-item">
+            <strong>Model:</strong> {assistantConfig.model?.model}
+          </div>
+          
+          <button 
+            onClick={handleStartCall}
+            className="start-call-btn"
           >
-            {availableVoices.map((v) => (
-              <option key={v.voiceId} value={v.voiceId}>
-                {v.name} ({v.provider})
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label>
-          Language:
-          <input
-            type="text"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            placeholder="en-US"
-            className="form-control"
-          />
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label>
-          System Prompt:
-          <textarea
-            value={instruction}
-            onChange={(e) => setInstruction(e.target.value)}
-            rows="10"
-            className="form-control"
-          />
-        </label>
-      </div>
-
-      <button type="submit" className="btn btn-primary">
-        Create Assistant
-      </button>
-    </form>
+            Start Call with Mary
+          </button>
+        </>
+      )}
+    </div>
   );
 };
 

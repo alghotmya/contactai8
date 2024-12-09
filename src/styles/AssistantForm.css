@@ -1,74 +1,36 @@
-/* Location: src/styles/AssistantForm.css */
-
-.assistant-form {
-    background-color: #f5f7fa;
-    padding: 15px; /* Reduced padding */
+.assistant-config {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    color: #333;
-    width: 100%;
-    max-width: 500px; /* Reduced max-width */
-    margin: auto;
-    font-family: 'Roboto', sans-serif;
-}
-
-.assistant-form label {
-    display: block;
-    margin-bottom: 4px; /* Reduced margin */
-    font-weight: 600;
-    color: #4a4a4a;
-    font-size: 14px; /* Reduced font size */
-}
-
-.assistant-form input, 
-.assistant-form select, 
-.assistant-form textarea {
-    width: 100%;
-    padding: 8px; /* Reduced padding */
-    margin-bottom: 10px; /* Reduced margin */
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #333;
-    font-size: 14px;
-    transition: border-color 0.3s;
-}
-
-.assistant-form input:focus, 
-.assistant-form select:focus, 
-.assistant-form textarea:focus {
-    border-color: #6c63ff;
-    outline: none;
-}
-
-.assistant-form input::placeholder, 
-.assistant-form textarea::placeholder {
-    color: #aaa;
-    font-size: 13px; /* Reduced font size */
-}
-
-.assistant-form .submit-button {
-    background-color: #6c63ff;
-    color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .config-item {
+    margin: 10px 0;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    background-color: #f8d7da;
+  }
+  
+  .start-call-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
     border: none;
-    padding: 8px 12px; /* Reduced padding */
-    font-size: 14px; /* Reduced font size */
-    font-weight: 600;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.assistant-form .submit-button:hover {
-    background-color: #574fd6;
-}
-
-.assistant-form .container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* Reduced gap between form fields */
-}
+  }
+  
+  .start-call-btn:hover {
+    background-color: #0056b3;
+  }
